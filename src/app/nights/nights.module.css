@@ -1391,3 +1391,29 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* NAVIGATION FOCUS RESET */
+
+.menuButton,
+.menuButton:focus,
+.menuButton:focus-visible,
+.menuButton:active {
+  outline: none !important;
+  outline-offset: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fullscreenMenu button,
+.fullscreenMenu button:focus,
+.fullscreenMenu button:focus-visible,
+.fullscreenMenu button:active {
+  outline: none !important;
+  outline-offset: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  -webkit-tap-highlight-color: transparent;
+}

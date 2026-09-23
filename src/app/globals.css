@@ -87,12 +87,48 @@ img {
 }
 
 button:focus-visible,
+button:focus,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
   outline: 1px solid var(--paper);
   outline-offset: 5px;
+}
+
+/* VELVET HOUR — navigation buttons never show browser focus frames */
+button[class*="menuButton"],
+button[class*="menuButton"]:focus,
+button[class*="menuButton"]:focus-visible,
+button[class*="menuButton"]:active {
+  outline: none !important;
+  outline-offset: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+button[class*="fullscreenMenu"],
+.fullscreenMenu button,
+.fullscreenMenu button:focus,
+.fullscreenMenu button:focus-visible,
+.fullscreenMenu button:active {
+  outline: none !important;
+  outline-offset: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* VELVET HOUR — navigation buttons */
+.menu-trigger:focus,
+.menu-trigger:focus-visible,
+.menuButton:focus,
+.menuButton:focus-visible,
+.fullscreenMenu button:focus,
+.fullscreenMenu button:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 ::-webkit-scrollbar {
