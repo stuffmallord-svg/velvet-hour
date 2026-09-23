@@ -994,6 +994,29 @@
   letter-spacing: 0.12em;
 }
 
+
+/* HARD FOCUS RESET — FULLSCREEN NAV */
+
+.fullscreenMenu button,
+.fullscreenMenu a {
+  outline: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fullscreenMenu button:focus,
+.fullscreenMenu button:focus-visible,
+.fullscreenMenu button:active,
+.fullscreenMenu a:focus,
+.fullscreenMenu a:focus-visible,
+.fullscreenMenu a:active {
+  outline: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
 /* FULLSCREEN MENU */
 
 .fullscreenMenu {
