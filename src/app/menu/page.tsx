@@ -12,281 +12,276 @@ type MenuItem = {
   note?: string;
 };
 
-type Category = {
+type MenuSection = {
   id: string;
   number: string;
-  name: string;
-  kicker: string;
-  intro: string;
+  title: string;
+  subtitle: string;
   image: string;
   items: MenuItem[];
 };
 
-const categories: Category[] = [
+const sections: MenuSection[] = [
   {
     id: "raw",
     number: "01",
-    name: "RAW",
-    kicker: "COLD / CLEAN / BRIGHT",
-    intro:
-      "Cold plates, clean cuts and things that should arrive before the first drink.",
+    title: "Raw",
+    subtitle: "Cold / sharp / precise",
     image: "/images/velvet/gallery-01.jpg",
     items: [
       {
+        name: "Yellowtail",
+        description: "ponzu / chilli / coriander oil",
+        price: "18",
+      },
+      {
         name: "Beef Tartare",
-        description:
-          "Hand-cut beef, smoked yolk, caper, toasted sourdough",
-        price: "£24",
+        description: "smoked yolk / shallot / toasted rye",
+        price: "21",
       },
       {
-        name: "Yellowfin Tuna",
-        description:
-          "Tuna, fermented chilli, sesame, green apple",
-        price: "£26",
+        name: "Oysters",
+        description: "green apple / dill / sea herbs",
+        price: "6",
+        note: "each",
       },
       {
-        name: "Charred Peach",
-        description:
-          "White peach, stracciatella, basil oil, sea salt",
-        price: "£18",
-        note: "VEGETARIAN",
-      },
-      {
-        name: "Scallop Crudo",
-        description:
-          "Scallop, pink grapefruit, jalapeño, olive oil",
-        price: "£23",
+        name: "Scallop",
+        description: "citrus kosho / fennel / brown butter",
+        price: "19",
       },
     ],
   },
   {
     id: "fire",
     number: "02",
-    name: "FIRE",
-    kicker: "CHAR / SMOKE / HEAT",
-    intro:
-      "Smoke, charcoal and heat. The center of the table starts here.",
+    title: "Fire",
+    subtitle: "Char / smoke / heat",
     image: "/images/velvet/after-dark.jpg",
     items: [
       {
-        name: "Roasted Sea Bass",
-        description:
-          "Whole sea bass, burnt lemon, fennel, herb butter",
-        price: "£31",
+        name: "Charred Octopus",
+        description: "nduja / lemon / smoked potato",
+        price: "24",
       },
       {
-        name: "Dry-Aged Strip",
-        description:
-          "35-day aged beef, black garlic, pepper jus",
-        price: "£39",
-        note: "FOR TWO +£12",
-      },
-      {
-        name: "Coal-Roasted Chicken",
-        description:
-          "Half chicken, smoked yoghurt, charred lemon",
-        price: "£28",
+        name: "Short Rib",
+        description: "black garlic / red wine / onion",
+        price: "31",
       },
       {
         name: "Burnt Cabbage",
-        description:
-          "Pointed cabbage, tahini, chilli crisp, herbs",
-        price: "£17",
-        note: "VEGETARIAN",
+        description: "tahini / fermented chilli / sesame",
+        price: "15",
+      },
+      {
+        name: "Chicken Thigh",
+        description: "anchovy butter / herbs / lemon",
+        price: "22",
       },
     ],
   },
   {
     id: "pasta",
     number: "03",
-    name: "PASTA",
-    kicker: "RICH / LATE / SIMPLE",
-    intro:
-      "Rich, late and intentionally uncomplicated. Best ordered for the table.",
+    title: "Pasta",
+    subtitle: "Late kitchen classics",
     image: "/images/velvet/noir.jpg",
     items: [
       {
-        name: "Black Garlic Pasta",
-        description:
-          "Spaghetti, black garlic, parmesan, chilli",
-        price: "£22",
+        name: "Black Garlic Rigatoni",
+        description: "parmesan / black pepper / aged balsamic",
+        price: "22",
       },
       {
         name: "Crab Linguine",
-        description:
-          "Cornish crab, tomato, lemon, chilli oil",
-        price: "£29",
+        description: "chilli / tomato / shellfish butter",
+        price: "27",
       },
       {
-        name: "Wild Mushroom Rigatoni",
-        description:
-          "Forest mushrooms, pecorino, thyme, brown butter",
-        price: "£24",
-        note: "VEGETARIAN",
+        name: "Cacio e Pepe",
+        description: "pecorino / black pepper / butter",
+        price: "19",
+      },
+      {
+        name: "Truffle Mafaldine",
+        description: "wild mushroom / parmesan / thyme",
+        price: "26",
       },
     ],
   },
   {
     id: "sweet",
     number: "04",
-    name: "SWEET",
-    kicker: "COLD / BURNT / BITTER",
-    intro:
-      "Dessert, but darker. Something cold, burnt, bitter or all three.",
+    title: "Sweet",
+    subtitle: "After dinner / before dawn",
     image: "/images/velvet/gallery-02.jpg",
     items: [
       {
-        name: "Burnt Vanilla",
-        description:
-          "Vanilla custard, burnt sugar, sea salt",
-        price: "£14",
-      },
-      {
         name: "Dark Chocolate",
-        description:
-          "70% chocolate, olive oil, cacao nib",
-        price: "£13",
+        description: "sea salt / olive oil / cacao",
+        price: "12",
       },
       {
-        name: "Olive Oil Cake",
-        description:
-          "Citrus, mascarpone, rosemary sugar",
-        price: "£12",
+        name: "Pear",
+        description: "vanilla / olive oil / almond",
+        price: "11",
+      },
+      {
+        name: "Soft Serve",
+        description: "black sesame / caramel / sea salt",
+        price: "9",
+      },
+      {
+        name: "Affogato",
+        description: "vanilla gelato / espresso / amaro",
+        price: "10",
       },
     ],
   },
   {
     id: "late",
     number: "05",
-    name: "LATE",
-    kicker: "MIDNIGHT / ONE MORE",
-    intro:
-      "For the hour when dinner is technically over and nobody wants to leave.",
+    title: "Late",
+    subtitle: "The kitchen stays open",
     image: "/images/velvet/velvet.jpg",
     items: [
       {
-        name: "Midnight Affogato",
-        description:
-          "Vanilla gelato, espresso, sea salt",
-        price: "£12",
+        name: "Cheeseburger",
+        description: "aged cheddar / onion / house sauce",
+        price: "17",
       },
       {
-        name: "Truffle Toast",
-        description:
-          "Sourdough, truffle butter, aged parmesan",
-        price: "£16",
+        name: "Crispy Chicken",
+        description: "hot honey / pickles / cabbage",
+        price: "16",
       },
       {
-        name: "Fries / Aioli",
-        description:
-          "Crisp potatoes, fermented garlic aioli",
-        price: "£9",
+        name: "Chips",
+        description: "malt vinegar / smoked salt",
+        price: "7",
       },
       {
-        name: "One More Oyster",
-        description:
-          "Single oyster, mignonette, lemon",
-        price: "£4",
+        name: "Grilled Cheese",
+        description: "aged cheddar / sourdough / mustard",
+        price: "12",
       },
     ],
   },
   {
     id: "drinks",
     number: "06",
-    name: "DRINKS",
-    kicker: "POUR / STIR / SHAKE",
-    intro:
-      "A short list built for long nights. Ask the room for what isn't written.",
+    title: "Drinks",
+    subtitle: "Wine / cocktails / after hours",
     image: "/images/velvet/hero.jpg",
     items: [
       {
-        name: "Velvet Negroni",
-        description:
-          "Gin, bitter orange, vermouth, house bitters",
-        price: "£15",
+        name: "Velvet Martini",
+        description: "gin / dry vermouth / olive",
+        price: "15",
       },
       {
-        name: "Black Manhattan",
-        description:
-          "Rye, amaro, sweet vermouth, cherry",
-        price: "£16",
+        name: "Black Negroni",
+        description: "gin / bitter orange / coffee",
+        price: "15",
       },
       {
-        name: "House Martini",
-        description:
-          "Vodka or gin, dry vermouth, olive",
-        price: "£17",
+        name: "House Red",
+        description: "cabernet / merlot / southern France",
+        price: "11",
+        note: "glass",
       },
       {
-        name: "Champagne",
-        description:
-          "By the glass / ask for the bottle list",
-        price: "£18",
+        name: "House White",
+        description: "chenin blanc / Loire Valley",
+        price: "11",
+        note: "glass",
       },
     ],
   },
 ];
 
-const dietaryNotes = [
-  "VEGETARIAN OPTIONS",
-  "ALLERGIES — PLEASE ASK",
-  "SERVICE CHARGE NOT INCLUDED",
+const quickLinks = [
+  { id: "raw", label: "Raw" },
+  { id: "fire", label: "Fire" },
+  { id: "pasta", label: "Pasta" },
+  { id: "sweet", label: "Sweet" },
+  { id: "late", label: "Late" },
+  { id: "drinks", label: "Drinks" },
 ];
 
+function getLondonTime() {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
+}
+
 export default function MenuPage() {
-  const [active, setActive] = useState("raw");
   const [clock, setClock] = useState("--:--");
+  const [activeSection, setActiveSection] = useState("raw");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const updateClock = () => {
-      setClock(
-        new Intl.DateTimeFormat("en-GB", {
-          timeZone: "Europe/London",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }).format(new Date())
-      );
-    };
+    const updateClock = () => setClock(getLondonTime());
 
     updateClock();
 
-    const interval = window.setInterval(updateClock, 30000);
+    const interval = window.setInterval(updateClock, 1000);
 
     return () => window.clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    const sections = categories
-      .map((category) => document.getElementById(category.id))
-      .filter(Boolean) as HTMLElement[];
+    document.body.style.overflow = menuOpen ? "hidden" : "";
 
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((entry) => entry.isIntersecting)
-          .sort(
-            (a, b) =>
-              b.intersectionRatio - a.intersectionRatio
-          );
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
-        if (visible[0]?.target.id) {
-          setActive(visible[0].target.id);
+        if (visible[0]) {
+          setActiveSection(visible[0].target.id);
         }
       },
       {
-        rootMargin: "-18% 0px -62% 0px",
-        threshold: [0.05, 0.2, 0.5],
+        rootMargin: "-20% 0px -60% 0px",
+        threshold: [0.1, 0.25, 0.5],
       }
     );
 
-    sections.forEach((section) => observer.observe(section));
+    sections.forEach((section) => {
+      const element = document.getElementById(section.id);
+
+      if (element) observer.observe(element);
+    });
 
     return () => observer.disconnect();
   }, []);
 
-  const scrollToCategory = (id: string) => {
-    setActive(id);
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const scrollToSection = (id: string) => {
+    setMenuOpen(false);
 
     document.getElementById(id)?.scrollIntoView({
       behavior: "smooth",
@@ -296,336 +291,330 @@ export default function MenuPage() {
 
   return (
     <main className={styles.page}>
-      {/* -------------------------------------------------- */}
-      {/* HEADER */}
-      {/* -------------------------------------------------- */}
-
-      <header className={styles.header}>
-        <Link href="/" className={styles.brand}>
+      <header className={styles.nav}>
+        <Link href="/" className={styles.logo}>
           VELVET HOUR
         </Link>
 
-        <div className={styles.headerMeta}>
-          <span>LONDON / SOHO</span>
-          <span>{clock} GMT</span>
+        <div className={styles.navCenter}>
+          <span>SOHO / LONDON</span>
+          <span className={styles.navDivider}>—</span>
+          <span className={styles.clock}>{clock} LDN</span>
         </div>
 
-        <Link href="/" className={styles.close}>
-          <span>BACK TO ROOM</span>
-          <b>×</b>
-        </Link>
+        <button
+          type="button"
+          className={styles.menuButton}
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open navigation"
+        >
+          <span>MENU</span>
+          <i>
+            <b />
+            <b />
+          </i>
+        </button>
       </header>
-
-      {/* -------------------------------------------------- */}
-      {/* HERO */}
-      {/* -------------------------------------------------- */}
 
       <section className={styles.hero}>
         <div className={styles.heroImage}>
           <Image
             src="/images/velvet/hero.jpg"
-            alt="VELVET HOUR"
+            alt="Velvet Hour dining room"
             fill
             priority
             sizes="100vw"
-            className={styles.heroImg}
           />
-          <div className={styles.heroShade} />
         </div>
 
-        <div className={styles.heroGrid}>
-          <div className={styles.heroTop}>
-            <span>03 / MENU</span>
-            <span>DINING / BAR / LATE</span>
-          </div>
+        <div className={styles.heroOverlay} />
 
-          <div className={styles.heroCenter}>
-            <span className={styles.heroEyebrow}>
-              THE KITCHEN
-            </span>
+        <div className={styles.heroTop}>
+          <span>01 / THE MENU</span>
+          <span>DINNER — LATE</span>
+        </div>
 
-            <h1>
-              EAT
-              <br />
-              <em>AFTER DARK.</em>
-            </h1>
-          </div>
+        <div className={styles.heroContent}>
+          <p className={styles.kicker}>Food / Wine / Music</p>
+
+          <h1>
+            The
+            <em>Menu</em>
+          </h1>
 
           <div className={styles.heroBottom}>
-            <span>FOOD / WINE / MUSIC</span>
-            <span>DINNER FROM 17:30</span>
-            <span>STAY LATE</span>
-          </div>
-        </div>
-
-        <div className={styles.heroIndex}>
-          <span>VH / 2026</span>
-          <span>MENU</span>
-        </div>
-      </section>
-
-      {/* -------------------------------------------------- */}
-      {/* INTRO */}
-      {/* -------------------------------------------------- */}
-
-      <section className={styles.intro}>
-        <div className={styles.introSide}>
-          <span>THE MENU</span>
-          <strong>2026</strong>
-        </div>
-
-        <div className={styles.introMain}>
-          <div className={styles.sectionLabel}>
-            <span>FOOD / WINE / MUSIC</span>
-            <span>01—06</span>
-          </div>
-
-          <h2>
-            BUILT FOR
-            <br />
-            <em>THE WHOLE NIGHT.</em>
-          </h2>
-
-          <div className={styles.introBottom}>
             <p>
-              The VELVET HOUR menu moves with the room.
-              Start light, order something from the fire,
-              open another bottle and stay longer than you
-              planned.
+              A menu built for long nights.
+              <br />
+              No beginning. No fixed ending.
             </p>
 
-            <div className={styles.introMark}>
-              <span>NO FIXED ORDER</span>
-              <span>NO RUSH</span>
+            <div className={styles.heroMeta}>
+              <span>17:30</span>
+              <span>—</span>
+              <span>03:30</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* -------------------------------------------------- */}
-      {/* CATEGORY NAV */}
-      {/* -------------------------------------------------- */}
+      <section className={styles.intro}>
+        <div className={styles.introNumber}>02</div>
 
-      <nav className={styles.categoryNav}>
-        <div className={styles.categoryNavInner}>
-          {categories.map((category) => (
-            <button
-              type="button"
-              key={category.id}
-              className={
-                active === category.id
-                  ? styles.navItemActive
-                  : styles.navItem
-              }
-              onClick={() =>
-                scrollToCategory(category.id)
-              }
-            >
-              <small>{category.number}</small>
-              <span>{category.name}</span>
-            </button>
-          ))}
+        <div className={styles.introContent}>
+          <p className={styles.eyebrow}>THE KITCHEN</p>
+
+          <h2>
+            Eat first.
+            <br />
+            <em>Stay late.</em>
+          </h2>
+
+          <div className={styles.introGrid}>
+            <p className={styles.introLead}>
+              The food changes with the room.
+            </p>
+
+            <div className={styles.introBody}>
+              <p>
+                VELVET HOUR is built around a simple idea: dinner does not need
+                to end when the plates are cleared.
+              </p>
+
+              <p>
+                The menu moves from raw and precise to charred, rich and
+                unapologetically late.
+              </p>
+
+              <span>Kitchen / London / 2026</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <nav className={styles.categoryBar} aria-label="Menu categories">
+        <div className={styles.categoryInner}>
+          <span className={styles.categoryLabel}>SECTIONS</span>
+
+          <div className={styles.categoryLinks}>
+            {quickLinks.map((link, index) => (
+              <button
+                type="button"
+                key={link.id}
+                className={
+                  activeSection === link.id ? styles.activeCategory : ""
+                }
+                onClick={() => scrollToSection(link.id)}
+              >
+                <small>{String(index + 1).padStart(2, "0")}</small>
+                {link.label}
+              </button>
+            ))}
+          </div>
         </div>
       </nav>
 
-      {/* -------------------------------------------------- */}
-      {/* MENU SECTIONS */}
-      {/* -------------------------------------------------- */}
-
-      <div className={styles.sections}>
-        {categories.map((category, categoryIndex) => (
-          <section
-            id={category.id}
-            className={styles.category}
-            key={category.id}
+      <section className={styles.menuList}>
+        {sections.map((section, sectionIndex) => (
+          <article
+            className={styles.menuSection}
+            id={section.id}
+            key={section.id}
           >
-            {/* VISUAL */}
-            <div className={styles.visual}>
+            <div className={styles.sectionImage}>
               <Image
-                src={category.image}
-                alt={category.name}
+                src={section.image}
+                alt={`${section.title} section`}
                 fill
-                sizes="(max-width: 900px) 100vw, 38vw"
-                className={styles.visualImage}
+                sizes="(max-width: 760px) 100vw, 42vw"
               />
 
-              <div className={styles.visualShade} />
+              <div className={styles.imageOverlay} />
 
-              <div className={styles.visualTop}>
-                <span>{category.number}</span>
-                <span>{category.kicker}</span>
+              <div className={styles.imageNumber}>
+                {section.number}
               </div>
 
-              <div className={styles.visualWord}>
-                {category.name}
-              </div>
-
-              <div className={styles.visualBottom}>
+              <div className={styles.imageCaption}>
+                <span>{section.subtitle}</span>
                 <span>VELVET HOUR</span>
-                <span>MENU / {category.number}</span>
               </div>
             </div>
 
-            {/* CONTENT */}
-            <div className={styles.content}>
-              <div className={styles.categoryHeader}>
-                <div className={styles.categoryMeta}>
-                  <span>
-                    {category.number} / {category.name}
+            <div className={styles.sectionContent}>
+              <div className={styles.sectionHeader}>
+                <div>
+                  <span className={styles.sectionNumber}>
+                    {section.number} / 06
                   </span>
 
-                  <span>{category.kicker}</span>
+                  <h2>{section.title}</h2>
                 </div>
 
-                <h2>
-                  {category.name}
-                  <i>.</i>
-                </h2>
-
-                <p>{category.intro}</p>
+                <span className={styles.sectionSubtitle}>
+                  {section.subtitle}
+                </span>
               </div>
 
-              <div className={styles.dishes}>
-                {category.items.map((item, index) => (
-                  <article
-                    className={styles.dish}
-                    key={item.name}
-                  >
-                    <div className={styles.dishIndex}>
-                      {String(index + 1).padStart(2, "0")}
+              <div className={styles.items}>
+                {section.items.map((item, itemIndex) => (
+                  <div className={styles.item} key={item.name}>
+                    <div className={styles.itemIndex}>
+                      {String(itemIndex + 1).padStart(2, "0")}
                     </div>
 
-                    <div className={styles.dishInfo}>
-                      <div className={styles.dishTitle}>
-                        <h3>{item.name}</h3>
-
-                        {item.note && (
-                          <span>{item.note}</span>
-                        )}
-                      </div>
-
+                    <div className={styles.itemMain}>
+                      <h3>{item.name}</h3>
                       <p>{item.description}</p>
                     </div>
 
-                    <strong className={styles.price}>
-                      {item.price}
-                    </strong>
-                  </article>
+                    <div className={styles.itemPrice}>
+                      <span>£{item.price}</span>
+
+                      {item.note && <small>{item.note}</small>}
+                    </div>
+                  </div>
                 ))}
               </div>
 
-              {categoryIndex === categories.length - 1 && (
-                <div className={styles.barNote}>
-                  <div>
-                    <span>ASK THE BAR</span>
-                  </div>
-
-                  <p>
-                    The written list is only part of the
-                    menu. Ask for off-list bottles,
-                    cocktails or whatever the room is
-                    drinking tonight.
-                  </p>
-                </div>
-              )}
-
-              <div className={styles.categoryFooter}>
-                <span>
-                  {category.number} / 06
-                </span>
-
-                <span>
-                  {categoryIndex ===
-                  categories.length - 1
-                    ? "END OF MENU"
-                    : "CONTINUE ↓"}
-                </span>
+              <div className={styles.sectionFooter}>
+                <span>SUBJECT TO SEASONAL CHANGE</span>
+                <span>ASK THE ROOM ABOUT OFF-MENU PLATES</span>
               </div>
             </div>
-          </section>
+
+            {sectionIndex !== sections.length - 1 && (
+              <div className={styles.sectionBreak}>
+                <span>—</span>
+                <span>{String(sectionIndex + 3).padStart(2, "0")}</span>
+              </div>
+            )}
+          </article>
         ))}
-      </div>
-
-      {/* -------------------------------------------------- */}
-      {/* NOTES */}
-      {/* -------------------------------------------------- */}
-
-      <section className={styles.notes}>
-        <div className={styles.notesTitle}>
-          <span>SMALL PRINT</span>
-          <strong>BEFORE<br />YOU ORDER.</strong>
-        </div>
-
-        <div className={styles.notesGrid}>
-          {dietaryNotes.map((note, index) => (
-            <div
-              className={styles.note}
-              key={note}
-            >
-              <span>
-                {String(index + 1).padStart(2, "0")}
-              </span>
-
-              <p>{note}</p>
-            </div>
-          ))}
-        </div>
       </section>
 
-      {/* -------------------------------------------------- */}
-      {/* CLOSING */}
-      {/* -------------------------------------------------- */}
-
-      <section className={styles.closing}>
-        <div className={styles.closingMain}>
-          <span>THE HOUSE RULE</span>
-
-          <h2>
-            ONE MORE
-            <br />
-            <em>THING.</em>
-          </h2>
+      <section className={styles.statement}>
+        <div className={styles.statementTop}>
+          <span>07 / AFTER HOURS</span>
+          <span>THE KITCHEN DOESN&apos;T SLEEP</span>
         </div>
 
-        <div className={styles.closingCopy}>
+        <div className={styles.statementText}>
           <p>
-            There is no perfect order. There is only the
-            next thing you want to eat.
+            Dinner is
+            <br />
+            <em>only the beginning.</em>
+          </p>
+        </div>
+
+        <div className={styles.statementBottom}>
+          <p>
+            Late food.
+            <br />
+            Cold drinks.
+            <br />
+            Loud records.
           </p>
 
-          <Link
-            href="/#reserve"
-            className={styles.reserveLink}
-          >
-            <span>RESERVE A TABLE</span>
-            <b>↗</b>
+          <Link href="/nights">
+            VIEW THE NIGHTS <span>↗</span>
           </Link>
         </div>
       </section>
 
-      {/* -------------------------------------------------- */}
-      {/* FOOTER */}
-      {/* -------------------------------------------------- */}
+      <section className={styles.cta}>
+        <div>
+          <span className={styles.eyebrow}>RESERVATIONS</span>
+
+          <h2>
+            Your table
+            <br />
+            <em>is waiting.</em>
+          </h2>
+        </div>
+
+        <div className={styles.ctaSide}>
+          <p>
+            Dinner from 17:30.
+            <br />
+            The room stays open late.
+          </p>
+
+          <Link href="/?reserve=1">
+            RESERVE A TABLE <span>→</span>
+          </Link>
+        </div>
+      </section>
 
       <footer className={styles.footer}>
-        <div className={styles.footerBrand}>
-          <strong>VELVET HOUR</strong>
-          <span>DINING / BAR / MUSIC</span>
+        <div className={styles.footerTop}>
+          <Link href="/" className={styles.footerLogo}>
+            VELVET
+            <em>HOUR</em>
+          </Link>
+
+          <div className={styles.footerLinks}>
+            <Link href="/">HOME</Link>
+            <Link href="/menu">MENU</Link>
+            <Link href="/nights">NIGHTS</Link>
+          </div>
+
+          <div className={styles.footerMeta}>
+            <span>SOHO / LONDON</span>
+            <span>CONCEPT PROJECT / 2026</span>
+          </div>
         </div>
 
-        <div className={styles.footerCenter}>
-          <span>LONDON / SOHO</span>
-          <span>CONCEPT PROJECT / 2026</span>
+        <div className={styles.footerBottom}>
+          <span>FOOD / WINE / MUSIC</span>
+          <span>GOOD FOOD. BAD HOURS.</span>
+          <span>© 2026 VELVET HOUR</span>
         </div>
-
-        <Link
-          href="/"
-          className={styles.footerBack}
-        >
-          BACK TO THE ROOM
-          <b>↑</b>
-        </Link>
       </footer>
+
+      <div
+        className={`${styles.fullscreenMenu} ${
+          menuOpen ? styles.menuOpen : ""
+        }`}
+        aria-hidden={!menuOpen}
+      >
+        <div className={styles.fullscreenInner}>
+          <div className={styles.overlayTop}>
+            <span>VELVET HOUR</span>
+
+            <button type="button" onClick={() => setMenuOpen(false)}>
+              CLOSE ×
+            </button>
+          </div>
+
+          <nav className={styles.overlayLinks}>
+            <Link href="/" onClick={() => setMenuOpen(false)}>
+              <small>01</small>
+              HOME
+            </Link>
+
+            <button type="button" onClick={() => scrollToSection("raw")}>
+              <small>02</small>
+              MENU
+            </button>
+
+            <Link href="/nights" onClick={() => setMenuOpen(false)}>
+              <small>03</small>
+              NIGHTS
+            </Link>
+
+            <Link href="/?reserve=1" onClick={() => setMenuOpen(false)}>
+              <small>04</small>
+              RESERVE
+            </Link>
+          </nav>
+
+          <div className={styles.overlayBottom}>
+            <span>SOHO / LONDON</span>
+            <span>{clock} LDN</span>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
