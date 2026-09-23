@@ -109,13 +109,6 @@
   background: currentColor;
 }
 
-.menuButton:focus,
-.menuButton:focus-visible,
-.menuButton:active {
-  outline: none !important;
-  box-shadow: none !important;
-  border: 0 !important;
-}
 
 /* HERO */
 
@@ -1005,17 +998,6 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-.fullscreenMenu button:focus,
-.fullscreenMenu button:focus-visible,
-.fullscreenMenu button:active,
-.fullscreenMenu a:focus,
-.fullscreenMenu a:focus-visible,
-.fullscreenMenu a:active {
-  outline: none !important;
-  border: 0 !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
 
 /* FULLSCREEN MENU */
 
@@ -1439,17 +1421,6 @@
   transform: translateX(15px);
 }
 
-.overlayLinks a:focus,
-.overlayLinks a:focus-visible,
-.overlayLinks a:active,
-.overlayLinks button:focus,
-.overlayLinks button:focus-visible,
-.overlayLinks button:active {
-  border: 0 !important;
-  outline: 0 !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
 
 .overlayLinks small {
   width: 25px;

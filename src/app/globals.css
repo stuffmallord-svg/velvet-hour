@@ -87,13 +87,27 @@ img {
 }
 
 button:focus-visible,
-button:focus,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
   outline: 1px solid var(--paper);
   outline-offset: 5px;
+}
+
+/* VELVET HOUR — navigation focus */
+.menu-trigger:focus,
+.menu-trigger:focus-visible,
+.menuButton:focus,
+.menuButton:focus-visible,
+.fullscreen-menu button:focus,
+.fullscreen-menu button:focus-visible,
+.fullscreenMenu button:focus,
+.fullscreenMenu button:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 
 /* VELVET HOUR — navigation buttons never show browser focus frames */
