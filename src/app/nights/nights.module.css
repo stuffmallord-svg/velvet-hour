@@ -1829,3 +1829,66 @@
   background: transparent !important;
   -webkit-tap-highlight-color: transparent;
 }
+
+/* FINAL ART DIRECTION / MIDNIGHT PULSE */
+
+.heroImage img {
+  filter: saturate(0.88) contrast(1.18) brightness(0.48);
+}
+
+.heroContent::after {
+  content: "00:17 / BASS THROUGH THE WALL";
+  display: block;
+  margin: 30px 0 0 clamp(0px, 18vw, 260px);
+  color: rgba(238, 233, 226, 0.5);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.15em;
+}
+
+.program {
+  position: relative;
+}
+
+.program::before {
+  content: "PULSE / 00:00—04:00";
+  position: absolute;
+  top: 140px;
+  right: 0;
+  color: rgba(193, 58, 77, 0.7);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.14em;
+  transform: rotate(90deg) translateX(100%);
+  transform-origin: right top;
+}
+
+.nightRow {
+  transition: color 350ms var(--ease-out), padding 350ms var(--ease-out), background 350ms ease, transform 350ms var(--ease-out);
+}
+
+.nightRow:hover,
+.nightRow.active {
+  transform: translateX(5px);
+}
+
+.nightMain strong {
+  letter-spacing: -0.055em;
+}
+
+@media (max-width: 760px) {
+  .heroContent::after {
+    margin-left: 12vw;
+  }
+
+  .program::before {
+    top: 105px;
+    right: -10px;
+    font-size: 6px;
+  }
+
+  .nightRow:hover,
+  .nightRow.active {
+    transform: none;
+  }
+}

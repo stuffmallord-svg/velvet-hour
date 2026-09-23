@@ -1603,3 +1603,51 @@
     transform: scale(1.035);
   }
 }
+
+/* FINAL ART DIRECTION / COLD OBJECTS */
+
+.heroImage img {
+  filter: saturate(0.38) contrast(1.18) brightness(0.56);
+}
+
+.heroContent::after {
+  content: "ICE / GLASS / 00:17";
+  display: block;
+  margin: 28px 0 0 clamp(0px, 18vw, 250px);
+  color: rgba(238, 233, 226, 0.38);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.16em;
+}
+
+.categoryBar {
+  background: rgba(7, 7, 7, 0.94);
+}
+
+.item {
+  transition: color 350ms var(--ease-out), padding 350ms var(--ease-out), background 350ms var(--ease-out), transform 350ms var(--ease-out);
+}
+
+.item:hover {
+  transform: translateX(5px);
+}
+
+.itemPrice {
+  color: var(--menu-paper);
+}
+
+.itemPrice span {
+  font-family: var(--serif);
+  font-size: 18px;
+  font-style: italic;
+}
+
+@media (max-width: 760px) {
+  .heroContent::after {
+    margin-left: 12vw;
+  }
+
+  .item:hover {
+    transform: none;
+  }
+}

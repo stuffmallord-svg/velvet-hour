@@ -598,6 +598,10 @@ export default function Home() {
               <span className="footer-label">EXPLORE</span>
               <Link href="/menu">MENU</Link>
               <Link href="/nights">NIGHTS</Link>
+              <Link href="/private-dining">PRIVATE DINING</Link>
+              <Link href="/reservations">RESERVATIONS</Link>
+              <Link href="/gift-cards">GIFT CARDS</Link>
+              <Link href="/the-velvet-list">THE VELVET LIST</Link>
             </div>
 
             <div>
@@ -666,10 +670,20 @@ export default function Home() {
               NIGHTS
             </Link>
 
-            <button type="button" onClick={openReservation}>
+            <Link href="/private-dining" onClick={() => setMenuOpen(false)}>
               <small>04</small>
-              RESERVE
-            </button>
+              PRIVATE DINING
+            </Link>
+
+            <Link href="/reservations" onClick={() => setMenuOpen(false)}>
+              <small>05</small>
+              RESERVATIONS
+            </Link>
+
+            <Link href="/gift-cards" onClick={() => setMenuOpen(false)}>
+              <small>06</small>
+              GIFT CARDS
+            </Link>
           </nav>
 
           <div className="fullscreen-menu-bottom">

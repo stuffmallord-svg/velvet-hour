@@ -2179,6 +2179,22 @@ textarea:focus-visible {
   }
 }
 
+.hero-content::after {
+  content: "LONDON / 00:17 / NIGHT STARTS AGAIN";
+  display: block;
+  margin-top: 28px;
+  color: rgba(241, 236, 229, 0.42);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.15em;
+  animation: titleDrift 7s ease-in-out infinite;
+}
+
+@keyframes titleDrift {
+  0%, 100% { transform: translateX(0); opacity: 0.55; }
+  50% { transform: translateX(8px); opacity: 0.85; }
+}
+
 /* TABLET */
 
 @media (max-width: 900px) {
