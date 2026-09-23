@@ -5,429 +5,498 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "./nights.module.css";
 
-type NightEvent = {
+type Night = {
   id: string;
+  date: string;
   day: string;
-  month: string;
-  year: string;
   title: string;
-  subtitle: string;
+  type: string;
+  details: string;
   time: string;
+  artist: string;
   image: string;
-  kicker: string;
   description: string;
-  start: string;
-  room: string;
-  location: string;
 };
 
-const events: NightEvent[] = [
+const nights: Night[] = [
   {
     id: "velvet-hour",
-    day: "26",
-    month: "SEP",
-    year: "2026",
+    date: "26",
+    day: "SEP",
     title: "VELVET HOUR",
-    subtitle: "DJ SET / ALL NIGHT",
-    time: "00:00 — 03:30",
-    image: "/images/velvet/velvet.jpg",
-    kicker: "VELVET HOUR",
+    type: "DJ SET / ALL NIGHT",
+    details: "M. SAINT",
+    time: "00:00—03:30",
+    artist: "M. SAINT",
+    image: "/images/velvet/gallery-01.jpg",
     description:
-      "The room changes after midnight. Low light, slow movement, deep records and a bar that stays open until the last track.",
-    start: "00:00",
-    room: "THE WHOLE HOUSE",
-    location: "SOHO / LONDON",
+      "The room turns darker after midnight. Slow pressure, heavy bass and a night built without a fixed ending.",
   },
   {
     id: "after-dark",
-    day: "27",
-    month: "SEP",
-    year: "2026",
+    date: "27",
+    day: "SEP",
     title: "AFTER DARK",
-    subtitle: "LIVE / DJ",
-    time: "23:00 — 04:00",
+    type: "LIVE / DJ",
+    details: "NIGHT SERVICE",
+    time: "23:00—04:00",
+    artist: "NIGHT SERVICE",
     image: "/images/velvet/after-dark.jpg",
-    kicker: "AFTER DARK",
     description:
-      "Dinner turns into drinks, drinks turn into music. A late service built around movement, sound and the people who stay.",
-    start: "23:00",
-    room: "THE WHOLE HOUSE",
-    location: "SOHO / LONDON",
+      "A live set dissolving into a late-night DJ session. Dinner, drinks and the first light of morning.",
   },
   {
     id: "noir-dinner",
-    day: "02",
-    month: "OCT",
-    year: "2026",
+    date: "02",
+    day: "OCT",
     title: "NOIR DINNER",
-    subtitle: "DINNER / SOUND",
-    time: "20:00 — LATE",
+    type: "DINNER / SOUND",
+    details: "TBA",
+    time: "20:00—LATE",
+    artist: "TBA",
     image: "/images/velvet/noir.jpg",
-    kicker: "NOIR DINNER",
     description:
-      "A slower night built around the table. Seasonal plates, red wine and a soundtrack that gradually takes over the room.",
-    start: "20:00",
-    room: "DINING ROOM",
-    location: "SOHO / LONDON",
+      "A slower room. Long dinner, low light and a soundtrack designed to stay underneath the conversation.",
   },
   {
     id: "sunday-slow",
-    day: "04",
-    month: "OCT",
-    year: "2026",
+    date: "04",
+    day: "OCT",
     title: "SUNDAY SLOW",
-    subtitle: "FOOD / WINE / RECORDS",
-    time: "12:00 — 21:00",
+    type: "FOOD / WINE / RECORDS",
+    details: "DAY SERVICE",
+    time: "12:00—21:00",
+    artist: "VELVET HOUR",
     image: "/images/velvet/gallery-02.jpg",
-    kicker: "SUNDAY SLOW",
     description:
-      "No rush. Long lunches, vinyl, late afternoon drinks and a room designed to let Sunday run into the evening.",
-    start: "12:00",
-    room: "DINING ROOM",
-    location: "SOHO / LONDON",
+      "The room changes shape for Sunday. Records, long lunches, bottles on the table and nowhere else to be.",
   },
 ];
 
-export default function NightsPage() {
-  const [selectedId, setSelectedId] = useState("after-dark");
-  const [clock, setClock] = useState("--:--");
+function getLondonTime() {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
+}
 
-  const selectedEvent =
-    events.find((event) => event.id === selectedId) ?? events[1];
+export default function NightsPage() {
+  const [clock, setClock] = useState("--:--");
+  const [selectedId, setSelectedId] = useState("after-dark");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const selectedNight =
+    nights.find((night) => night.id === selectedId) ?? nights[1];
 
   useEffect(() => {
-    const updateClock = () => {
-      const value = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/London",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      }).format(new Date());
-
-      setClock(value);
-    };
+    const updateClock = () => setClock(getLondonTime());
 
     updateClock();
 
-    const interval = window.setInterval(updateClock, 30000);
+    const interval = window.setInterval(updateClock, 1000);
 
     return () => window.clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   return (
     <main className={styles.page}>
-      <div className={styles.background} aria-hidden="true" />
-
-      <header className={styles.header}>
-        <Link href="/" className={styles.brand}>
-          VELVET
-          <span>HOUR</span>
+      <header className={styles.nav}>
+        <Link href="/" className={styles.logo}>
+          VELVET HOUR
         </Link>
 
-        <div className={styles.headerCenter}>
+        <div className={styles.navCenter}>
           <span>SOHO / LONDON</span>
-          <span className={styles.headerDot}>●</span>
-          <span>{clock} GMT</span>
+          <span className={styles.divider}>—</span>
+          <span className={styles.clock}>{clock} LDN</span>
         </div>
 
-        <Link href="/" className={styles.close}>
-          <span>BACK</span>
-          <strong>×</strong>
-        </Link>
+        <button
+          type="button"
+          className={styles.menuButton}
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open navigation"
+        >
+          <span>MENU</span>
+
+          <i>
+            <b />
+            <b />
+          </i>
+        </button>
       </header>
 
       <section className={styles.hero}>
         <div className={styles.heroImage}>
           <Image
-            src="/images/velvet/after-dark.jpg"
-            alt="VELVET HOUR after dark"
+            src="/images/velvet/velvet.jpg"
+            alt="VELVET HOUR nightlife"
             fill
             priority
             sizes="100vw"
           />
-          <div className={styles.heroShade} />
-          <div className={styles.heroGrain} />
         </div>
+
+        <div className={styles.heroOverlay} />
 
         <div className={styles.heroTop}>
-          <span>THE NIGHTS</span>
-          <span>01 — 04</span>
+          <span>01 / THE NIGHTS</span>
+          <span>LONDON / AFTER DARK</span>
         </div>
 
-        <div className={styles.heroDate}>
-          <span>SEP</span>
-          <strong>27</strong>
-          <span>2026</span>
-        </div>
+        <div className={styles.heroContent}>
+          <p className={styles.eyebrow}>Music / People / After Hours</p>
 
-        <div className={styles.heroTitle}>
-          <p>AFTER DARK</p>
-          <h1>NIGHT<span>.</span></h1>
-          <p className={styles.heroTitleBottom}>LIVE / DJ</p>
-        </div>
+          <h1>
+            The
+            <em>Nights</em>
+          </h1>
 
-        <div className={styles.heroBottom}>
-          <div>
-            <span>TIME</span>
-            <strong>23:00 — 04:00</strong>
+          <div className={styles.heroBottom}>
+            <p>
+              The room changes after dark.
+              <br />
+              Find out what happens next.
+            </p>
+
+            <div className={styles.heroIndex}>
+              <span>FRI — SUN</span>
+              <span>20:00—04:00</span>
+            </div>
           </div>
-
-          <div>
-            <span>ROOM</span>
-            <strong>THE WHOLE HOUSE</strong>
-          </div>
-
-          <div>
-            <span>WHERE</span>
-            <strong>SOHO / LONDON</strong>
-          </div>
-        </div>
-
-        <div className={styles.heroCount}>
-          <span>SCROLL TO EXPLORE</span>
-          <span>↓</span>
         </div>
       </section>
 
       <section className={styles.intro}>
-        <div className={styles.sectionIndex}>01 / THE NIGHT</div>
+        <div className={styles.introNumber}>02</div>
 
-        <div className={styles.introContent}>
-          <p className={styles.eyebrow}>
-            THE NIGHT DOESN&apos;T END AT DINNER.
-          </p>
+        <div>
+          <p className={styles.eyebrow}>AFTER HOURS</p>
 
           <h2>
-            BUILT
+            Not every
             <br />
-            TO <em>STAY.</em>
+            night is
+            <em>the same.</em>
           </h2>
 
-          <p className={styles.introText}>
-            VELVET HOUR moves through the night in phases. Dinner is only the
-            beginning. As the room gets darker, the music gets louder, the
-            tables get smaller and the bar becomes the centre of everything.
+          <div className={styles.introGrid}>
+            <p>
+              VELVET HOUR is a room that changes with the clock.
+            </p>
+
+            <div>
+              <p>
+                Some nights begin around a dinner table. Others begin at
+                midnight and continue until the city starts making noise again.
+              </p>
+
+              <span>London / Soho / 2026</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.program}>
+        <div className={styles.programHeader}>
+          <div>
+            <span className={styles.sectionNumber}>03 / PROGRAM</span>
+
+            <h2>
+              Choose your
+              <em>night.</em>
+            </h2>
+          </div>
+
+          <p>
+            Four different moods.
+            <br />
+            One room.
           </p>
         </div>
-      </section>
 
-      <section className={styles.eventsSection}>
-        <div className={styles.sectionIndex}>02 / WHAT&apos;S ON</div>
-
-        <div className={styles.eventsHeading}>
-          <p>SELECT A NIGHT</p>
-          <h2>AFTER HOURS</h2>
-        </div>
-
-        <div className={styles.eventList}>
-          {events.map((event, index) => {
-            const isActive = selectedEvent.id === event.id;
-
-            return (
+        <div className={styles.programLayout}>
+          <div className={styles.nightList}>
+            {nights.map((night, index) => (
               <button
-                key={event.id}
                 type="button"
-                className={`${styles.eventRow} ${
-                  isActive ? styles.eventRowActive : ""
+                key={night.id}
+                className={`${styles.nightRow} ${
+                  selectedId === night.id ? styles.active : ""
                 }`}
-                onClick={() => setSelectedId(event.id)}
-                aria-pressed={isActive}
+                onClick={() => setSelectedId(night.id)}
               >
-                <span className={styles.eventNumber}>
-                  0{index + 1}
-                </span>
+                <div className={styles.nightDate}>
+                  <small>{night.day}</small>
+                  <strong>{night.date}</strong>
+                </div>
 
-                <span className={styles.eventDate}>
-                  <small>{event.month}</small>
-                  <strong>{event.day}</strong>
-                </span>
+                <div className={styles.nightMain}>
+                  <strong>{night.title}</strong>
+                  <small>{night.type}</small>
+                </div>
 
-                <span className={styles.eventName}>
-                  <strong>{event.title}</strong>
-                  <small>{event.subtitle}</small>
-                </span>
+                <div className={styles.nightTime}>{night.time}</div>
 
-                <span className={styles.eventTime}>
-                  {event.time}
-                </span>
+                <div className={styles.nightArrow}>↗</div>
 
-                <span className={styles.eventArrow}>↗</span>
+                <span className={styles.rowIndex}>
+                  {String(index + 1).padStart(2, "0")}
+                </span>
               </button>
-            );
-          })}
+            ))}
+          </div>
+
+          <div className={styles.feature}>
+            <div className={styles.featureImage}>
+              <Image
+                key={selectedNight.image}
+                src={selectedNight.image}
+                alt={selectedNight.title}
+                fill
+                sizes="(max-width: 760px) 100vw, 50vw"
+              />
+
+              <div className={styles.featureOverlay} />
+
+              <div className={styles.featureTop}>
+                <span>{selectedNight.day}</span>
+                <span>{selectedNight.date}</span>
+              </div>
+
+              <div className={styles.featureBottom}>
+                <span>{selectedNight.type}</span>
+                <span>{selectedNight.time}</span>
+              </div>
+            </div>
+
+            <div className={styles.featureCopy}>
+              <div>
+                <span className={styles.sectionNumber}>FEATURED NIGHT</span>
+
+                <h3>{selectedNight.title}</h3>
+              </div>
+
+              <p>{selectedNight.description}</p>
+
+              <div className={styles.featureMeta}>
+                <span>{selectedNight.artist}</span>
+                <span>{selectedNight.time}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section className={styles.featured}>
-        <div className={styles.featuredImage}>
+      <section className={styles.afterHours}>
+        <div className={styles.afterHoursImage}>
           <Image
-            key={selectedEvent.image}
-            src={selectedEvent.image}
-            alt={selectedEvent.title}
+            src="/images/velvet/after-dark.jpg"
+            alt="After dark at Velvet Hour"
             fill
-            sizes="(max-width: 900px) 100vw, 65vw"
+            sizes="100vw"
           />
 
-          <div className={styles.featuredShade} />
-
-          <div className={styles.imageTopLabel}>
-            <span>{selectedEvent.kicker}</span>
-            <span>{selectedEvent.year}</span>
-          </div>
-
-          <div className={styles.imageBottomLabel}>
-            <span>{selectedEvent.location}</span>
-            <span>{selectedEvent.time}</span>
-          </div>
+          <div className={styles.afterHoursOverlay} />
         </div>
 
-        <div className={styles.featuredCopy}>
-          <p className={styles.featuredKicker}>
-            SELECTED NIGHT / {selectedEvent.month} {selectedEvent.day}
-          </p>
+        <div className={styles.afterHoursContent}>
+          <div className={styles.afterHoursTop}>
+            <span>04 / AFTER DARK</span>
+            <span>00:00—04:00</span>
+          </div>
+
+          <div className={styles.afterHoursCenter}>
+            <p>
+              When dinner
+              <br />
+              <em>becomes something else.</em>
+            </p>
+          </div>
+
+          <div className={styles.afterHoursBottom}>
+            <p>
+              Low light.
+              <br />
+              High volume.
+              <br />
+              No dress code.
+            </p>
+
+            <span>THE ROOM / LATE</span>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.details}>
+        <div className={styles.detailsHeader}>
+          <span className={styles.sectionNumber}>05 / THE ROOM</span>
 
           <h2>
-            {selectedEvent.title === "AFTER DARK" ? (
-              <>
-                LIVE
-                <br />
-                <em>DJ.</em>
-              </>
-            ) : (
-              <>
-                {selectedEvent.title.split(" ")[0]}
-                <br />
-                <em>{selectedEvent.title.split(" ").slice(1).join(" ")}.</em>
-              </>
-            )}
+            Stay for
+            <em>the last one.</em>
           </h2>
+        </div>
 
-          <p className={styles.featuredDescription}>
-            {selectedEvent.description}
+        <div className={styles.detailsGrid}>
+          <div className={styles.detailBlock}>
+            <span>01</span>
+
+            <h3>Music</h3>
+
+            <p>
+              DJs, live sets and records selected for the room rather than the
+              algorithm.
+            </p>
+          </div>
+
+          <div className={styles.detailBlock}>
+            <span>02</span>
+
+            <h3>Drinks</h3>
+
+            <p>
+              Cocktails, wine and the occasional drink that exists only for
+              one night.
+            </p>
+          </div>
+
+          <div className={styles.detailBlock}>
+            <span>03</span>
+
+            <h3>Kitchen</h3>
+
+            <p>
+              Food continues late. Some dishes are better after midnight than
+              they are at eight.
+            </p>
+          </div>
+
+          <div className={styles.detailBlock}>
+            <span>04</span>
+
+            <h3>People</h3>
+
+            <p>
+              Come alone. Come late. Come with someone you have not seen in
+              years.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className={styles.statement}>
+        <div className={styles.statementTop}>
+          <span>06 / ONE MORE</span>
+          <span>NO LAST SONG</span>
+        </div>
+
+        <div className={styles.statementCenter}>
+          <p>
+            Some nights
+            <br />
+            <em>should not end.</em>
           </p>
+        </div>
 
-          <div className={styles.details}>
-            <div>
-              <span>START</span>
-              <strong>{selectedEvent.start}</strong>
-            </div>
-
-            <div>
-              <span>ROOM</span>
-              <strong>{selectedEvent.room}</strong>
-            </div>
-
-            <div>
-              <span>LOCATION</span>
-              <strong>{selectedEvent.location}</strong>
-            </div>
-          </div>
-
-          <Link href="/#reserve" className={styles.reserveButton}>
-            <span>RESERVE A TABLE</span>
-            <strong>↗</strong>
+        <div className={styles.statementBottom}>
+          <span>VELVET HOUR / SOHO</span>
+          <Link href="/?reserve=1">
+            RESERVE A TABLE <span>→</span>
           </Link>
-
-          <div className={styles.featureNote}>
-            <span>TABLES ARE LIMITED</span>
-            <span>DINNER / MUSIC / LATE</span>
-          </div>
         </div>
-      </section>
-
-      <section className={styles.manifesto}>
-        <div className={styles.manifestoWord}>NIGHT</div>
-
-        <div className={styles.manifestoContent}>
-          <div className={styles.sectionIndex}>03 / AFTER HOURS</div>
-
-          <div className={styles.manifestoLines}>
-            <div>
-              <span>01</span>
-              <p>
-                THE LAST COURSE IS NOT THE LAST WORD.
-              </p>
-            </div>
-
-            <div>
-              <span>02</span>
-              <p>
-                THE ROOM CHANGES WHEN THE CLOCK DOES.
-              </p>
-            </div>
-
-            <div>
-              <span>03</span>
-              <p>
-                STAY LONG ENOUGH TO SEE IT.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className={styles.info}>
-        <div className={styles.sectionIndex}>04 / THE HOUSE</div>
-
-        <div className={styles.infoGrid}>
-          <article>
-            <span>01 / MUSIC</span>
-            <h3>THE HOUR.</h3>
-            <p>
-              DJs, live sets and carefully selected records move through the
-              house without ever becoming background noise.
-            </p>
-          </article>
-
-          <article>
-            <span>02 / SERVICE</span>
-            <h3>LATE.</h3>
-            <p>
-              The kitchen stays open late on selected nights. Come for the
-              table. Stay for everything after it.
-            </p>
-          </article>
-
-          <article>
-            <span>03 / ROOM</span>
-            <h3>JUST NIGHT.</h3>
-            <p>
-              No rules beyond respect for the room. Come dressed for wherever
-              the night takes you.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section className={styles.cta}>
-        <p>WHEN THE CITY GOES QUIET</p>
-        <h2>
-          WE&apos;RE
-          <br />
-          STILL <em>OPEN.</em>
-        </h2>
-
-        <Link href="/#reserve" className={styles.ctaButton}>
-          <span>BOOK THE NIGHT</span>
-          <strong>↗</strong>
-        </Link>
       </section>
 
       <footer className={styles.footer}>
-        <div className={styles.footerBrand}>
-          <strong>VELVET HOUR</strong>
-          <span>DINING / BAR / MUSIC</span>
+        <div className={styles.footerTop}>
+          <Link href="/" className={styles.footerLogo}>
+            VELVET
+            <em>HOUR</em>
+          </Link>
+
+          <div className={styles.footerLinks}>
+            <Link href="/">HOME</Link>
+            <Link href="/menu">MENU</Link>
+            <Link href="/nights">NIGHTS</Link>
+          </div>
+
+          <div className={styles.footerMeta}>
+            <span>SOHO / LONDON</span>
+            <span>CONCEPT PROJECT / 2026</span>
+          </div>
         </div>
 
-        <div className={styles.footerMeta}>
-          <span>LONDON / SOHO</span>
-          <span>CONCEPT PROJECT / 2026</span>
+        <div className={styles.footerBottom}>
+          <span>FOOD / WINE / MUSIC</span>
+          <span>GOOD FOOD. BAD HOURS.</span>
+          <span>© 2026 VELVET HOUR</span>
         </div>
-
-        <Link href="/" className={styles.footerBack}>
-          BACK TO HOME ↗
-        </Link>
       </footer>
+
+      <div
+        className={`${styles.fullscreenMenu} ${
+          menuOpen ? styles.menuOpen : ""
+        }`}
+      >
+        <div className={styles.fullscreenInner}>
+          <div className={styles.overlayTop}>
+            <span>VELVET HOUR</span>
+
+            <button type="button" onClick={() => setMenuOpen(false)}>
+              CLOSE ×
+            </button>
+          </div>
+
+          <nav className={styles.overlayLinks}>
+            <Link href="/" onClick={() => setMenuOpen(false)}>
+              <small>01</small>
+              HOME
+            </Link>
+
+            <Link href="/menu" onClick={() => setMenuOpen(false)}>
+              <small>02</small>
+              MENU
+            </Link>
+
+            <Link href="/nights" onClick={() => setMenuOpen(false)}>
+              <small>03</small>
+              NIGHTS
+            </Link>
+
+            <Link href="/?reserve=1" onClick={() => setMenuOpen(false)}>
+              <small>04</small>
+              RESERVE
+            </Link>
+          </nav>
+
+          <div className={styles.overlayBottom}>
+            <span>SOHO / LONDON</span>
+            <span>{clock} LDN</span>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
