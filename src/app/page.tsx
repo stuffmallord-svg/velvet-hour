@@ -3,24 +3,24 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  CSSProperties,
+  FormEvent,
   useEffect,
   useState,
-  type CSSProperties,
-  type FormEvent,
 } from "react";
 
 type Phase = {
   time: string;
-  label: string;
-  sub: string;
-  accent: string;
+  title: string;
+  meta: string[];
+  color: string;
 };
 
 type Night = {
   day: string;
   date: string;
   title: string;
-  meta: string;
+  type: string;
   time: string;
   artist: string;
   image: string;
@@ -29,133 +29,156 @@ type Night = {
 const phases: Phase[] = [
   {
     time: "12",
-    label: "DAY",
-    sub: "LUNCH / COFFEE / SLOW HOURS",
-    accent: "#7d1728",
+    title: "DAY",
+    meta: ["LUNCH", "COFFEE", "SLOW HOURS"],
+    color: "#7d1728",
   },
   {
     time: "18",
-    label: "DINNER",
-    sub: "FOOD / WINE / FIRST DRINK",
-    accent: "#8d1f31",
+    title: "DINNER",
+    meta: ["FOOD", "WINE", "FIRST DRINK"],
+    color: "#8d1f31",
   },
   {
     time: "22",
-    label: "VELVET",
-    sub: "BAR / MUSIC / SOCIAL",
-    accent: "#a62a3d",
+    title: "VELVET",
+    meta: ["BAR", "MUSIC", "SOCIAL"],
+    color: "#a62a3d",
   },
   {
     time: "00",
-    label: "AFTER DARK",
-    sub: "DJS / LIVE / DANCEFLOOR",
-    accent: "#bd3448",
+    title: "AFTER DARK",
+    meta: ["DJS", "LIVE", "DANCEFLOOR"],
+    color: "#bd3448",
   },
   {
     time: "03",
-    label: "LAST CALL",
-    sub: "LATE NIGHTS / ONE MORE",
-    accent: "#641321",
+    title: "LAST CALL",
+    meta: ["LATE NIGHTS", "ONE MORE"],
+    color: "#641321",
   },
 ];
 
 const nights: Night[] = [
   {
     day: "FRI",
-    date: "26",
+    date: "26 SEP",
     title: "VELVET HOUR",
-    meta: "DJ SET / ALL NIGHT",
+    type: "DJ SET / ALL NIGHT",
     time: "00:00—03:30",
     artist: "M. SAINT",
     image: "/images/velvet/velvet.jpg",
   },
   {
     day: "SAT",
-    date: "27",
+    date: "27 SEP",
     title: "AFTER DARK",
-    meta: "LIVE / DJ",
+    type: "LIVE / DJ",
     time: "23:00—04:00",
     artist: "NIGHT SERVICE",
     image: "/images/velvet/after-dark.jpg",
   },
   {
     day: "THU",
-    date: "02",
+    date: "02 OCT",
     title: "NOIR DINNER",
-    meta: "DINNER / SOUND",
+    type: "DINNER / SOUND",
     time: "20:00—LATE",
     artist: "TBA",
     image: "/images/velvet/noir.jpg",
   },
 ];
 
-const menuItems = [
+const menuPreview = [
   {
-    section: "RAW",
+    category: "RAW",
     items: [
-      ["Yellowtail / ponzu / chilli", "18"],
-      ["Beef tartare / smoked yolk", "21"],
-      ["Oyster / green apple / dill", "6"],
+      ["Yellowtail", "ponzu / chilli", "18"],
+      ["Beef tartare", "smoked yolk", "21"],
+      ["Oyster", "green apple / dill", "6"],
     ],
   },
   {
-    section: "FIRE",
+    category: "FIRE",
     items: [
-      ["Charred octopus / nduja", "24"],
-      ["Short rib / black garlic", "31"],
-      ["Burnt cabbage / tahini", "15"],
+      ["Charred octopus", "nduja", "24"],
+      ["Short rib", "black garlic", "31"],
+      ["Burnt cabbage", "tahini", "15"],
     ],
   },
   {
-    section: "SWEET",
+    category: "SWEET",
     items: [
-      ["Dark chocolate / sea salt", "12"],
-      ["Pear / vanilla / olive oil", "11"],
-      ["Soft serve / black sesame", "9"],
+      ["Dark chocolate", "sea salt", "12"],
+      ["Pear", "vanilla / olive oil", "11"],
+      ["Soft serve", "black sesame", "9"],
     ],
   },
 ];
 
 const gallery = [
-  "/images/velvet/gallery-01.jpg",
-  "/images/velvet/gallery-02.jpg",
-  "/images/velvet/after-dark.jpg",
+  {
+    src: "/images/velvet/gallery-01.jpg",
+    alt: "VELVET HOUR interior",
+    className: "gallery-large",
+  },
+  {
+    src: "/images/velvet/gallery-02.jpg",
+    alt: "VELVET HOUR dining atmosphere",
+    className: "gallery-small",
+  },
+  {
+    src: "/images/velvet/noir.jpg",
+    alt: "VELVET HOUR night atmosphere",
+    className: "gallery-wide",
+  },
 ];
 
-export default function Home() {
+function getLondonTime() {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/London",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date());
+}
+
+function getActivePhaseIndex(hour: number) {
+  if (hour >= 3 && hour < 12) return 4;
+  if (hour >= 12 && hour < 18) return 0;
+  if (hour >= 18 && hour < 22) return 1;
+  if (hour >= 22 || hour === 0) return hour === 0 ? 3 : 2;
+  return 0;
+}
+
+export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activePhase, setActivePhase] = useState(3);
   const [activeNight, setActiveNight] = useState(1);
   const [reservationOpen, setReservationOpen] = useState(false);
   const [reservationSent, setReservationSent] = useState(false);
-  const [clock, setClock] = useState("--:--");
+  const [clock, setClock] = useState(() => getLondonTime());
   const [scrolled, setScrolled] = useState(false);
   const [showTop, setShowTop] = useState(false);
 
-  const currentPhase = phases[activePhase] ?? phases[0];
-  const currentNight = nights[activeNight] ?? nights[0];
-
-  const phaseDescriptions = [
-    "The room opens slowly. Coffee, lunch, low light and nowhere to rush.",
-    "The dining room shifts into evening. Wine, plates and the first conversations.",
-    "The lights drop. The bar becomes the centre of the room.",
-    "The room changes completely. Music gets louder and the night takes over.",
-    "The final hours. Fewer people, lower lights, one last drink.",
-  ];
-
-  const phaseDescription =
-    phaseDescriptions[activePhase] ?? phaseDescriptions[0];
-
   useEffect(() => {
     const updateClock = () => {
-      const formatter = new Intl.DateTimeFormat("en-GB", {
-        timeZone: "Europe/London",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      });
+      const now = new Date();
 
-      setClock(formatter.format(new Date()));
+      setClock(getLondonTime());
+      setActivePhaseIndexFromTime(now);
+    };
+
+    const setActivePhaseIndexFromTime = (date: Date) => {
+      const londonHour = Number(
+        new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Europe/London",
+          hour: "2-digit",
+          hour12: false,
+        }).format(date),
+      );
+
+      setActivePhase(getActivePhaseIndex(londonHour));
     };
 
     updateClock();
@@ -166,505 +189,490 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
+    const onScroll = () => {
       const y = window.scrollY;
 
-      setScrolled(y > 30);
-      setShowTop(y > 700);
+      setScrolled(y > 40);
+      setShowTop(y > 900);
     };
 
-    handleScroll();
+    onScroll();
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-
-    if (menuOpen || reservationOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = previousOverflow;
-    }
+    document.body.style.overflow = menuOpen || reservationOpen ? "hidden" : "";
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = "";
     };
   }, [menuOpen, reservationOpen]);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
+    const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMenuOpen(false);
         setReservationOpen(false);
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", onKeyDown);
 
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const scrollTo = (id: string) => {
-    setMenuOpen(false);
+  const currentNight = nights[activeNight];
 
-    window.setTimeout(() => {
-      document.getElementById(id)?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 50);
-  };
-
-  const openReservation = () => {
-    setReservationSent(false);
-    setReservationOpen(true);
-  };
-
-  const closeReservation = () => {
-    setReservationOpen(false);
-  };
-
-  const submitReservation = (event: FormEvent<HTMLFormElement>) => {
+  const handleReservation = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setReservationSent(true);
   };
 
+  const closeReservation = () => {
+    setReservationOpen(false);
+
+    window.setTimeout(() => {
+      setReservationSent(false);
+    }, 250);
+  };
+
   return (
     <main
-      className="vh-site"
+      className="site-shell"
       style={
         {
-          "--accent": currentPhase.accent,
+          "--active-red": phases[activePhase].color,
         } as CSSProperties
       }
     >
-      <div className="vh-red-glow" aria-hidden="true" />
-
-      <header className={`vh-nav ${scrolled ? "is-scrolled" : ""}`}>
-        <button
-          className="vh-logo"
-          onClick={() => scrollTo("top")}
-          aria-label="Back to top"
+      <nav className={`site-nav ${scrolled ? "is-scrolled" : ""}`}>
+        <Link
+          href="/"
+          className="nav-brand"
+          aria-label="VELVET HOUR home"
         >
-          <span>VELVET</span>
-          <span>HOUR</span>
-        </button>
+          VELVET HOUR
+        </Link>
 
-        <div className="vh-nav-center">
-          <span className="vh-live-dot" />
-          <span>LONDON</span>
-          <span className="vh-clock">{clock}</span>
+        <div className="nav-center">
+          <span>SOHO / LONDON</span>
+          <span
+            className="nav-clock"
+            suppressHydrationWarning
+            aria-label="London local time"
+          >
+            LONDON {clock}
+          </span>
         </div>
 
         <button
-          className={`vh-menu-trigger ${menuOpen ? "is-open" : ""}`}
+          type="button"
+          className={`menu-trigger ${menuOpen ? "is-open" : ""}`}
           onClick={() => setMenuOpen((value) => !value)}
           aria-expanded={menuOpen}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-controls="fullscreen-menu"
         >
-          <span className="vh-menu-label">
-            {menuOpen ? "CLOSE" : "MENU"}
-          </span>
-
-          <span className="vh-menu-icon" aria-hidden="true">
+          <span>{menuOpen ? "CLOSE" : "MENU"}</span>
+          <span className="menu-lines" aria-hidden="true">
             <i />
             <i />
           </span>
         </button>
-      </header>
+      </nav>
 
-      <section id="top" className="vh-hero">
-        <div className="vh-hero-image">
-          <Image
-            src="/images/velvet/hero.jpg"
-            alt="VELVET HOUR interior"
-            fill
-            priority
-            sizes="100vw"
-          />
+      <section className="hero" aria-labelledby="hero-title">
+        <Image
+          src="/images/velvet/hero.jpg"
+          alt="VELVET HOUR late-night dining room"
+          fill
+          priority
+          sizes="100vw"
+          className="hero-image"
+        />
+
+        <div className="hero-overlay" />
+
+        <div className="hero-topline">
+          <span>EST. 2026</span>
+          <span>FOOD / WINE / MUSIC</span>
+          <span>OPEN LATE</span>
         </div>
 
-        <div className="vh-hero-overlay" />
+        <div className="hero-content">
+          <p className="eyebrow">A ROOM FOR THE HOURS BETWEEN</p>
 
-        <div className="vh-hero-content">
-          <div className="vh-kicker">
-            <span>EST. 2026</span>
-            <span>NIGHT / DINING / MUSIC</span>
-          </div>
+          <h1 id="hero-title">
+            VELVET
+            <br />
+            <em>HOUR</em>
+          </h1>
 
-          <div className="vh-hero-title-wrap">
-            <h1>
-              VELVET
-              <em>HOUR</em>
-            </h1>
-          </div>
-
-          <div className="vh-hero-bottom">
+          <div className="hero-bottom">
             <p>
-              A late-night room for food,
+              A late-night dining room,
               <br />
-              sound and everything between.
+              bar and music space.
             </p>
 
-            <button
-              className="vh-circle-link"
-              onClick={() => scrollTo("experience")}
-              aria-label="Explore Velvet Hour"
-            >
-              <span>↓</span>
-            </button>
+            <div className="hero-actions">
+              <button
+                type="button"
+                onClick={() => setReservationOpen(true)}
+              >
+                RESERVE A TABLE <span>↗</span>
+              </button>
+
+              <Link href="/menu">
+                VIEW MENU <span>↗</span>
+              </Link>
+            </div>
           </div>
         </div>
 
-        <div className="vh-hero-index">
-          <span>01</span>
-          <span>/</span>
-          <span>07</span>
-        </div>
+        <div className="hero-index">01 / 05</div>
       </section>
 
-      <section className="vh-intro vh-section" id="experience">
-        <div className="vh-container">
-          <div className="vh-section-topline">
-            <span>01 — THE ROOM</span>
-            <span>OPEN UNTIL LATE</span>
-          </div>
+      <section className="intro section-pad">
+        <div className="section-number">01</div>
 
-          <div className="vh-intro-grid">
-            <div className="vh-intro-number">01</div>
+        <div className="intro-copy">
+          <p className="eyebrow">THE ROOM</p>
 
-            <div className="vh-intro-main">
-              <p className="vh-eyebrow">NOT A RESTAURANT. NOT A CLUB.</p>
+          <h2>
+            NOT A RESTAURANT.
+            <br />
+            <em>NOT QUITE A CLUB.</em>
+          </h2>
 
-              <h2>
-                Somewhere
-                <br />
-                <i>in between.</i>
-              </h2>
-            </div>
+          <div className="intro-grid">
+            <p className="intro-lead">
+              VELVET HOUR lives somewhere between dinner and the
+              first train home.
+            </p>
 
-            <div className="vh-intro-copy">
+            <div className="intro-body">
               <p>
-                VELVET HOUR is built around the hours when most places begin
-                closing.
+                A room built around good food, precise drinks and
+                music that changes with the hour.
               </p>
-
               <p>
-                Dinner turns into drinks. Drinks turn into music. Music turns
-                into something less defined.
-              </p>
-
-              <p className="vh-muted">
-                Come early. Stay late. There is no correct way to experience
-                the room.
+                Come early for dinner. Stay for another drink.
+                Leave when the city starts moving again.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="vh-states vh-section">
-        <div className="vh-container">
-          <div className="vh-section-topline">
-            <span>02 — THE HOURS</span>
-            <span>THE ROOM CHANGES</span>
-          </div>
-
-          <div className="vh-states-layout">
-            <div className="vh-state-list">
-              {phases.map((phase, index) => (
-                <button
-                  key={phase.time}
-                  className={`vh-state-row ${
-                    activePhase === index ? "is-active" : ""
-                  }`}
-                  onClick={() => setActivePhase(index)}
-                >
-                  <span className="vh-state-time">{phase.time}</span>
-
-                  <span className="vh-state-info">
-                    <strong>{phase.label}</strong>
-                    <small>{phase.sub}</small>
-                  </span>
-
-                  <span className="vh-state-arrow">↗</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="vh-state-display">
-              <div
-                className="vh-state-display-bg"
-                style={{
-                  background: `radial-gradient(circle at 50% 45%, ${currentPhase.accent}, transparent 62%)`,
-                }}
-              />
-
-              <div className="vh-state-big-time">
-                {currentPhase.time}
-              </div>
-
-              <div className="vh-state-display-copy">
-                <span>{currentPhase.label}</span>
-                <p>{phaseDescription}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="vh-menu-preview vh-section" id="menu">
-        <div className="vh-container">
-          <div className="vh-section-topline">
-            <span>03 — THE MENU</span>
-            <Link href="/menu">FULL MENU ↗</Link>
-          </div>
-
-          <div className="vh-menu-heading">
+      <section className="states" aria-label="VELVET HOUR phases">
+        <div className="states-head">
+          <div>
+            <p className="eyebrow">THE HOURS</p>
             <h2>
-              FOOD FOR
+              ONE ROOM.
               <br />
-              <i>THE NIGHT.</i>
+              <em>FIVE PHASES.</em>
             </h2>
-
-            <p>
-              Small plates. Heavy flavours.
-              <br />
-              Nothing designed to keep you here
-              <br />
-              for only an hour.
-            </p>
           </div>
 
-          <div className="vh-food-grid">
-            {menuItems.map((group) => (
-              <div className="vh-food-group" key={group.section}>
-                <div className="vh-food-heading">
-                  <span>{group.section}</span>
-                  <span>—</span>
-                </div>
+          <p className="states-note">
+            The room changes without
+            <br />
+            asking you to leave.
+          </p>
+        </div>
 
-                {group.items.map(([name, price]) => (
-                  <div className="vh-food-item" key={name}>
-                    <span>{name}</span>
+        <div className="phase-list">
+          {phases.map((phase, index) => (
+            <button
+              type="button"
+              key={phase.time}
+              className={`phase-row ${
+                activePhase === index ? "is-active" : ""
+              }`}
+              onMouseEnter={() => setActivePhase(index)}
+              onFocus={() => setActivePhase(index)}
+              onClick={() => setActivePhase(index)}
+              style={
+                {
+                  "--phase-color": phase.color,
+                } as CSSProperties
+              }
+            >
+              <span className="phase-time">{phase.time}</span>
+
+              <span className="phase-title">{phase.title}</span>
+
+              <span className="phase-meta">
+                {phase.meta.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </span>
+
+              <span className="phase-arrow" aria-hidden="true">
+                ↗
+              </span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section className="menu-section section-pad">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">THE MENU</p>
+            <h2>
+              BUILT FOR
+              <br />
+              <em>SHARING.</em>
+            </h2>
+          </div>
+
+          <Link href="/menu" className="text-link">
+            FULL MENU <span>↗</span>
+          </Link>
+        </div>
+
+        <div className="menu-grid">
+          {menuPreview.map((group, index) => (
+            <div className="menu-column" key={group.category}>
+              <div className="menu-column-head">
+                <span>0{index + 1}</span>
+                <span>{group.category}</span>
+              </div>
+
+              <div className="menu-items">
+                {group.items.map(([name, detail, price]) => (
+                  <div className="menu-item" key={name}>
+                    <div>
+                      <h3>{name}</h3>
+                      <p>{detail}</p>
+                    </div>
+
                     <span>{price}</span>
                   </div>
                 ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
+        </div>
 
-          <div className="vh-menu-note">
-            <span>MENU CHANGES WITH THE ROOM</span>
-            <span>VEGETARIAN OPTIONS AVAILABLE</span>
-          </div>
+        <div className="menu-note">
+          <span>DINNER FROM 17:30</span>
+          <span>VEGAN / VEGETARIAN OPTIONS</span>
+          <span>ASK ABOUT ALLERGIES</span>
         </div>
       </section>
 
-      <section className="vh-nights vh-section" id="nights">
-        <div className="vh-container">
-          <div className="vh-section-topline">
-            <span>04 — NIGHTS</span>
-            <Link href="/nights">ALL NIGHTS ↗</Link>
-          </div>
+      <section className="nights-section">
+        <div className="nights-image">
+          <Image
+            src={currentNight.image}
+            alt={`${currentNight.title} at VELVET HOUR`}
+            fill
+            sizes="(max-width: 900px) 100vw, 50vw"
+          />
 
-          <div className="vh-nights-grid">
-            <div className="vh-night-selector">
-              {nights.map((night, index) => (
-                <button
-                  key={`${night.day}-${night.date}`}
-                  className={`vh-night-row ${
-                    activeNight === index ? "is-active" : ""
-                  }`}
-                  onClick={() => setActiveNight(index)}
-                >
-                  <span className="vh-night-date">
-                    <small>{night.day}</small>
-                    <strong>{night.date}</strong>
-                  </span>
+          <div className="image-gradient" />
 
-                  <span className="vh-night-name">
-                    <strong>{night.title}</strong>
-                    <small>{night.meta}</small>
-                  </span>
-
-                  <span className="vh-night-arrow">↗</span>
-                </button>
-              ))}
-            </div>
-
-            <div className="vh-night-feature">
-              <div className="vh-night-image">
-                <Image
-                  key={currentNight.image}
-                  src={currentNight.image}
-                  alt={currentNight.title}
-                  fill
-                  sizes="(max-width: 900px) 100vw, 58vw"
-                />
-
-                <div className="vh-night-image-overlay" />
-              </div>
-
-              <div className="vh-night-feature-info">
-                <span>{currentNight.time}</span>
-                <strong>{currentNight.artist}</strong>
-              </div>
-
-              <div className="vh-night-feature-title">
-                {currentNight.title}
-              </div>
-            </div>
+          <div className="image-caption">
+            <span>VELVET HOUR / NIGHTS</span>
+            <span>{currentNight.date}</span>
           </div>
         </div>
-      </section>
 
-      <section className="vh-manifesto vh-section">
-        <div className="vh-manifesto-inner">
-          <span className="vh-manifesto-small">VELVET HOUR / 2026</span>
-
-          <h2>
-            THE NIGHT
-            <br />
-            <i>IS LONGER</i>
-            <br />
-            <span>THAN YOU THINK.</span>
-          </h2>
-
-          <div className="vh-manifesto-bottom">
-            <span>FOOD</span>
-            <span>MUSIC</span>
-            <span>PEOPLE</span>
-            <span>TIME</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="vh-gallery vh-section" id="gallery">
-        <div className="vh-container">
-          <div className="vh-section-topline">
-            <span>05 — THE ROOM</span>
-            <span>AFTER HOURS</span>
-          </div>
-
-          <div className="vh-gallery-grid">
-            <div className="vh-gallery-item vh-gallery-large">
-              <Image
-                src={gallery[0]}
-                alt="VELVET HOUR room"
-                fill
-                sizes="(max-width: 900px) 100vw, 62vw"
-              />
-            </div>
-
-            <div className="vh-gallery-item vh-gallery-small">
-              <Image
-                src={gallery[1]}
-                alt="VELVET HOUR atmosphere"
-                fill
-                sizes="(max-width: 900px) 100vw, 36vw"
-              />
-            </div>
-
-            <div className="vh-gallery-item vh-gallery-wide">
-              <Image
-                src={gallery[2]}
-                alt="VELVET HOUR after dark"
-                fill
-                sizes="100vw"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="vh-reservation vh-section" id="reserve">
-        <div className="vh-container">
-          <div className="vh-reservation-grid">
+        <div className="nights-content">
+          <div className="section-heading compact">
             <div>
-              <span className="vh-eyebrow">06 — RESERVATIONS</span>
-
+              <p className="eyebrow">WHAT&apos;S ON</p>
               <h2>
-                COME
+                AFTER
                 <br />
-                <i>THROUGH.</i>
+                <em>DARK.</em>
               </h2>
             </div>
 
-            <div className="vh-reservation-copy">
-              <p>
-                Tables are held for dinner, drinks and everything that happens
-                afterwards.
-              </p>
+            <Link href="/nights" className="text-link">
+              ALL NIGHTS <span>↗</span>
+            </Link>
+          </div>
 
-              <p className="vh-muted">
-                For groups, private nights and late arrivals, contact the room
-                directly.
-              </p>
-
+          <div className="night-list">
+            {nights.map((night, index) => (
               <button
-                className="vh-primary-button"
-                onClick={openReservation}
+                type="button"
+                key={night.title}
+                className={`night-row ${
+                  activeNight === index ? "is-active" : ""
+                }`}
+                onClick={() => setActiveNight(index)}
               >
-                <span>REQUEST A TABLE</span>
-                <span>↗</span>
-              </button>
+                <span className="night-date">
+                  <small>{night.day}</small>
+                  <strong>{night.date}</strong>
+                </span>
 
-              <div className="vh-reservation-details">
-                <span>DINNER — 18:00</span>
-                <span>BAR — 22:00</span>
-                <span>LATE — UNTIL 04:00</span>
-              </div>
-            </div>
+                <span className="night-main">
+                  <strong>{night.title}</strong>
+                  <small>{night.type}</small>
+                </span>
+
+                <span className="night-time">{night.time}</span>
+
+                <span className="night-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className="night-feature">
+            <span>FEATURED</span>
+            <strong>{currentNight.artist}</strong>
+            <p>{currentNight.type}</p>
           </div>
         </div>
       </section>
 
-      <footer className="vh-footer">
-        <div className="vh-container">
-          <div className="vh-footer-top">
-            <div className="vh-footer-logo">
-              VELVET
+      <section className="manifesto section-pad">
+        <div className="section-number">03</div>
+
+        <div className="manifesto-content">
+          <p className="eyebrow">THE IDEA</p>
+
+          <h2>
+            SOMEWHERE
+            <br />
+            BETWEEN
+            <br />
+            <em>DINNER &amp; DAWN.</em>
+          </h2>
+
+          <div className="manifesto-bottom">
+            <p>
+              VELVET HOUR is designed around the moment a dinner
+              becomes a night.
+            </p>
+
+            <p>
+              The lights get lower. The music gets louder.
+              Conversations become longer. Nothing tells you it&apos;s
+              time to go.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="gallery-section">
+        <div className="gallery-head">
+          <p className="eyebrow">INSIDE THE ROOM</p>
+          <span>04 / 05</span>
+        </div>
+
+        <div className="gallery-grid">
+          {gallery.map((item) => (
+            <div
+              className={`gallery-item ${item.className}`}
+              key={item.src}
+            >
+              <Image
+                src={item.src}
+                alt={item.alt}
+                fill
+                sizes="(max-width: 700px) 100vw, 50vw"
+              />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="reservation-section">
+        <div className="reservation-inner">
+          <div>
+            <p className="eyebrow">TABLES / LATE NIGHTS</p>
+
+            <h2>
+              COME FOR
               <br />
-              <i>HOUR</i>
-            </div>
-
-            <div className="vh-footer-links">
-              <button onClick={() => scrollTo("experience")}>
-                EXPERIENCE
-              </button>
-              <button onClick={() => scrollTo("menu")}>MENU</button>
-              <button onClick={() => scrollTo("nights")}>NIGHTS</button>
-              <button onClick={() => scrollTo("gallery")}>ROOM</button>
-              <button onClick={openReservation}>RESERVATIONS</button>
-            </div>
-
-            <div className="vh-footer-meta">
-              <span>VELVET HOUR</span>
-              <span>LONDON / TBC</span>
-              <span>OPEN LATE</span>
-            </div>
+              <em>THE HOUR.</em>
+            </h2>
           </div>
 
-          <div className="vh-footer-bottom">
-            <span>© 2026 VELVET HOUR</span>
-            <span>CONCEPT PROJECT</span>
-            <span>ALL HOURS RESERVED</span>
+          <div className="reservation-copy">
+            <p>
+              Dinner, drinks or the last table after midnight.
+              Reservations are recommended.
+            </p>
+
+            <button
+              type="button"
+              className="reservation-button"
+              onClick={() => setReservationOpen(true)}
+            >
+              MAKE A RESERVATION <span>↗</span>
+            </button>
           </div>
+        </div>
+      </section>
+
+      <footer className="site-footer">
+        <div className="footer-top">
+          <div className="footer-brand">
+            VELVET
+            <br />
+            <em>HOUR</em>
+          </div>
+
+          <div className="footer-columns">
+            <div>
+              <span className="footer-label">VISIT</span>
+              <p>
+                SOHO / LONDON
+                <br />
+                DINNER 17:30—LATE
+              </p>
+            </div>
+
+            <div>
+              <span className="footer-label">FOLLOW</span>
+              <p>
+                INSTAGRAM
+                <br />
+                @VELVETHOUR
+              </p>
+            </div>
+
+            <div>
+              <span className="footer-label">EXPLORE</span>
+              <p>
+                <Link href="/menu">MENU</Link>
+                <br />
+                <Link href="/nights">NIGHTS</Link>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <span>© 2026 VELVET HOUR</span>
+          <span>CONCEPT PROJECT / LONDON</span>
+          <span>05 / 05</span>
         </div>
       </footer>
 
       {showTop && (
         <button
-          className="vh-back-top"
-          onClick={() => scrollTo("top")}
+          type="button"
+          className="back-top"
+          onClick={() =>
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            })
+          }
           aria-label="Back to top"
         >
           ↑
@@ -672,52 +680,67 @@ export default function Home() {
       )}
 
       <div
-        className={`vh-menu-overlay ${menuOpen ? "is-open" : ""}`}
+        id="fullscreen-menu"
+        className={`fullscreen-menu ${menuOpen ? "is-open" : ""}`}
         aria-hidden={!menuOpen}
       >
-        <div className="vh-menu-overlay-inner">
-          <div className="vh-overlay-top">
-            <span>VELVET HOUR</span>
-            <span>THE ROOM / LONDON</span>
+        <div className="fullscreen-menu-inner">
+          <div className="fullscreen-menu-top">
+            <span>VELVET HOUR / 2026</span>
+            <span>SOHO / LONDON</span>
           </div>
 
-          <nav className="vh-overlay-nav">
-            <button onClick={() => scrollTo("experience")}>
+          <nav className="fullscreen-links" aria-label="Main navigation">
+            <Link
+              href="/"
+              onClick={() => setMenuOpen(false)}
+            >
               <span>01</span>
-              EXPERIENCE
-            </button>
+              HOME
+            </Link>
 
-            <button onClick={() => scrollTo("menu")}>
+            <Link
+              href="/menu"
+              onClick={() => setMenuOpen(false)}
+            >
               <span>02</span>
               MENU
-            </button>
+            </Link>
 
-            <button onClick={() => scrollTo("nights")}>
+            <Link
+              href="/nights"
+              onClick={() => setMenuOpen(false)}
+            >
               <span>03</span>
               NIGHTS
-            </button>
+            </Link>
 
-            <button onClick={() => scrollTo("gallery")}>
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(false);
+                setReservationOpen(true);
+              }}
+            >
               <span>04</span>
-              ROOM
-            </button>
-
-            <button onClick={() => scrollTo("reserve")}>
-              <span>05</span>
-              RESERVATIONS
+              RESERVE
             </button>
           </nav>
 
-          <div className="vh-overlay-bottom">
-            <span>FOOD / SOUND / PEOPLE</span>
-            <span>OPEN LATE</span>
+          <div className="fullscreen-menu-bottom">
+            <span>FOOD / WINE / MUSIC</span>
+            <span
+              suppressHydrationWarning
+            >
+              LONDON {clock}
+            </span>
           </div>
         </div>
       </div>
 
       {reservationOpen && (
         <div
-          className="vh-modal"
+          className="reservation-modal"
           role="dialog"
           aria-modal="true"
           aria-labelledby="reservation-title"
@@ -727,9 +750,10 @@ export default function Home() {
             }
           }}
         >
-          <div className="vh-modal-card">
+          <div className="reservation-card">
             <button
-              className="vh-modal-close"
+              type="button"
+              className="modal-close"
               onClick={closeReservation}
               aria-label="Close reservation"
             >
@@ -738,95 +762,108 @@ export default function Home() {
 
             {!reservationSent ? (
               <>
-                <span className="vh-eyebrow">VELVET HOUR</span>
+                <p className="eyebrow">TABLE RESERVATION</p>
 
                 <h2 id="reservation-title">
-                  REQUEST
+                  SAVE
                   <br />
-                  <i>A TABLE.</i>
+                  <em>YOUR HOUR.</em>
                 </h2>
 
-                <p>
-                  Send us your preferred date and time. This concept interface
-                  does not create a real reservation.
-                </p>
-
                 <form
-                  className="vh-reservation-form"
-                  onSubmit={submitReservation}
+                  className="reservation-form"
+                  onSubmit={handleReservation}
                 >
                   <label>
-                    <span>NAME</span>
+                    NAME
                     <input
-                      name="name"
                       type="text"
+                      name="name"
                       placeholder="Your name"
                       required
                     />
                   </label>
 
                   <label>
-                    <span>EMAIL</span>
+                    EMAIL
                     <input
-                      name="email"
                       type="email"
-                      placeholder="you@email.com"
+                      name="email"
+                      placeholder="you@example.com"
                       required
                     />
                   </label>
 
-                  <div className="vh-form-grid">
+                  <div className="form-row">
                     <label>
-                      <span>DATE</span>
-                      <input name="date" type="date" required />
+                      DATE
+                      <input
+                        type="date"
+                        name="date"
+                        required
+                      />
                     </label>
 
                     <label>
-                      <span>TIME</span>
-                      <input name="time" type="time" required />
+                      GUESTS
+                      <select name="guests" defaultValue="2">
+                        <option value="1">1 GUEST</option>
+                        <option value="2">2 GUESTS</option>
+                        <option value="3">3 GUESTS</option>
+                        <option value="4">4 GUESTS</option>
+                        <option value="5">5 GUESTS</option>
+                        <option value="6">6 GUESTS</option>
+                        <option value="7">7 GUESTS</option>
+                        <option value="8">8 GUESTS</option>
+                      </select>
                     </label>
                   </div>
 
                   <label>
-                    <span>PEOPLE</span>
-                    <select name="people" defaultValue="2">
-                      <option value="1">1 person</option>
-                      <option value="2">2 people</option>
-                      <option value="3">3 people</option>
-                      <option value="4">4 people</option>
-                      <option value="5">5 people</option>
-                      <option value="6">6 people</option>
-                      <option value="7">7 people</option>
-                      <option value="8">8+ people</option>
+                    TIME
+                    <select name="time" defaultValue="21:00">
+                      <option value="18:00">18:00</option>
+                      <option value="19:00">19:00</option>
+                      <option value="20:00">20:00</option>
+                      <option value="21:00">21:00</option>
+                      <option value="22:00">22:00</option>
+                      <option value="23:00">23:00</option>
                     </select>
                   </label>
 
-                  <button className="vh-submit-button" type="submit">
-                    SEND REQUEST ↗
+                  <button type="submit" className="form-submit">
+                    REQUEST TABLE <span>↗</span>
                   </button>
                 </form>
+
+                <p className="form-note">
+                  This is a concept experience. No real reservation
+                  will be processed.
+                </p>
               </>
             ) : (
-              <div className="vh-confirmation">
-                <span className="vh-confirmation-number">✓</span>
+              <div className="reservation-success">
+                <span className="success-mark">✓</span>
 
-                <span className="vh-eyebrow">REQUEST RECEIVED</span>
+                <p className="eyebrow">REQUEST RECEIVED</p>
 
                 <h2>
                   SEE YOU
                   <br />
-                  <i>AFTER DARK.</i>
+                  <em>AFTER DARK.</em>
                 </h2>
 
                 <p>
-                  Your request has been recorded for this concept project.
+                  Your reservation request has been recorded for
+                  this concept experience.
                 </p>
 
                 <button
-                  className="vh-submit-button"
+                  type="button"
+                  className="form-submit"
                   onClick={closeReservation}
                 >
-                  CLOSE
+                  CLOSE <span>×</span>
                 </button>
               </div>
             )}
