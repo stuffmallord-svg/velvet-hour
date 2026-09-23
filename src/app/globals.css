@@ -1334,6 +1334,14 @@ textarea:focus-visible {
   transform: translateX(12px);
 }
 
+.fullscreen-links a:focus,
+.fullscreen-links a:focus-visible,
+.fullscreen-links button:focus,
+.fullscreen-links button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
 /* MODAL */
 
 .reservation-modal {
