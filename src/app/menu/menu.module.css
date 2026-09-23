@@ -110,9 +110,11 @@
 }
 
 .menuButton:focus,
-.menuButton:focus-visible {
-  outline: none;
-  box-shadow: none;
+.menuButton:focus-visible,
+.menuButton:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: 0 !important;
 }
 
 /* HERO */
@@ -1378,16 +1380,58 @@
   }
 
   .overlayLinks a,
-  .overlayLinks button {
-    font-size: clamp(50px, 16vw, 85px);
-  }
+.overlayLinks button {
+  display: flex;
+  align-items: baseline;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+
+  appearance: none;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+
+  border-radius: 0;
+  background: transparent;
+
+  color: var(--menu-paper);
+  font-family: var(--serif);
+  font-size: clamp(65px, 10vw, 155px);
+  font-weight: 400;
+  letter-spacing: -0.09em;
+  line-height: 0.76;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .page *,
-  .page *::before,
-  .page *::after {
-    scroll-behavior: auto !important;
-    transition-duration: 0.01ms !important;
-  }
+.overlayLinks a:hover,
+.overlayLinks button:hover {
+  color: var(--menu-red);
+  transform: translateX(15px);
+}
+
+.overlayLinks a:focus,
+.overlayLinks a:focus-visible,
+.overlayLinks a:active,
+.overlayLinks button:focus,
+.overlayLinks button:focus-visible,
+.overlayLinks button:active {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.overlayLinks small {
+  width: 25px;
+  color: var(--menu-muted);
+  font-family: var(--mono);
+  font-size: 7px;
+  letter-spacing: 0.06em;
 }
