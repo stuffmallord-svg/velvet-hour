@@ -260,9 +260,7 @@ export default function NightsPage() {
 
                 <div className={styles.nightTime}>{night.time}</div>
 
-                <div className={styles.nightArrow} aria-hidden="true">
-  <span>↗︎</span>
-</div>
+                <div className={styles.nightArrow} aria-hidden="true" />
 
                 <span className={styles.rowIndex}>
                   {String(index + 1).padStart(2, "0")}
@@ -426,7 +424,7 @@ export default function NightsPage() {
         <div className={styles.statementBottom}>
           <span>VELVET HOUR / SOHO</span>
           <Link href="/?reserve=1">
-            RESERVE A TABLE <span>→</span>
+            RESERVE A TABLE <span aria-hidden="true" />
           </Link>
         </div>
       </section>
