@@ -12,12 +12,11 @@ import {
 type Phase = {
   time: string;
   title: string;
-  meta: string[];
+  meta: string;
   color: string;
 };
 
 type Night = {
-  day: string;
   date: string;
   title: string;
   type: string;
@@ -30,38 +29,37 @@ const phases: Phase[] = [
   {
     time: "12",
     title: "DAY",
-    meta: ["LUNCH", "COFFEE", "SLOW HOURS"],
+    meta: "LUNCH / COFFEE / SLOW HOURS",
     color: "#7d1728",
   },
   {
     time: "18",
     title: "DINNER",
-    meta: ["FOOD", "WINE", "FIRST DRINK"],
+    meta: "FOOD / WINE / FIRST DRINK",
     color: "#8d1f31",
   },
   {
     time: "22",
     title: "VELVET",
-    meta: ["BAR", "MUSIC", "SOCIAL"],
+    meta: "BAR / MUSIC / SOCIAL",
     color: "#a62a3d",
   },
   {
     time: "00",
     title: "AFTER DARK",
-    meta: ["DJS", "LIVE", "DANCEFLOOR"],
+    meta: "DJS / LIVE / DANCEFLOOR",
     color: "#bd3448",
   },
   {
     time: "03",
     title: "LAST CALL",
-    meta: ["LATE NIGHTS", "ONE MORE"],
+    meta: "LATE NIGHTS / ONE MORE",
     color: "#641321",
   },
 ];
 
 const nights: Night[] = [
   {
-    day: "FRI",
     date: "26 SEP",
     title: "VELVET HOUR",
     type: "DJ SET / ALL NIGHT",
@@ -70,7 +68,6 @@ const nights: Night[] = [
     image: "/images/velvet/velvet.jpg",
   },
   {
-    day: "SAT",
     date: "27 SEP",
     title: "AFTER DARK",
     type: "LIVE / DJ",
@@ -79,7 +76,6 @@ const nights: Night[] = [
     image: "/images/velvet/after-dark.jpg",
   },
   {
-    day: "THU",
     date: "02 OCT",
     title: "NOIR DINNER",
     type: "DINNER / SOUND",
@@ -91,7 +87,7 @@ const nights: Night[] = [
 
 const menuPreview = [
   {
-    category: "RAW",
+    section: "RAW",
     items: [
       ["Yellowtail", "ponzu / chilli", "18"],
       ["Beef tartare", "smoked yolk", "21"],
@@ -99,7 +95,7 @@ const menuPreview = [
     ],
   },
   {
-    category: "FIRE",
+    section: "FIRE",
     items: [
       ["Charred octopus", "nduja", "24"],
       ["Short rib", "black garlic", "31"],
@@ -107,7 +103,7 @@ const menuPreview = [
     ],
   },
   {
-    category: "SWEET",
+    section: "SWEET",
     items: [
       ["Dark chocolate", "sea salt", "12"],
       ["Pear", "vanilla / olive oil", "11"],
@@ -117,21 +113,10 @@ const menuPreview = [
 ];
 
 const gallery = [
-  {
-    src: "/images/velvet/gallery-01.jpg",
-    alt: "VELVET HOUR interior",
-    className: "gallery-large",
-  },
-  {
-    src: "/images/velvet/gallery-02.jpg",
-    alt: "VELVET HOUR dining atmosphere",
-    className: "gallery-small",
-  },
-  {
-    src: "/images/velvet/noir.jpg",
-    alt: "VELVET HOUR night atmosphere",
-    className: "gallery-wide",
-  },
+  "/images/velvet/gallery-01.jpg",
+  "/images/velvet/gallery-02.jpg",
+  "/images/velvet/after-dark.jpg",
+  "/images/velvet/noir.jpg",
 ];
 
 function getLondonTime() {
@@ -147,35 +132,31 @@ function getActivePhaseIndex(hour: number) {
   if (hour >= 3 && hour < 12) return 4;
   if (hour >= 12 && hour < 18) return 0;
   if (hour >= 18 && hour < 22) return 1;
-  if (hour >= 22 || hour === 0) return hour === 0 ? 3 : 2;
+  if (hour >= 22) return 2;
+  if (hour < 3) return 3;
+
   return 0;
 }
 
-export default function HomePage() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activePhase, setActivePhase] = useState(3);
-  const [activeNight, setActiveNight] = useState(1);
-  const [reservationOpen, setReservationOpen] = useState(false);
-  const [reservationSent, setReservationSent] = useState(false);
+export default function Home() {
   const [clock, setClock] = useState(() => getLondonTime());
-  const [scrolled, setScrolled] = useState(false);
-  const [showTop, setShowTop] = useState(false);
+  const [activePhase, setActivePhase] = useState(3);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [reservationOpen, setReservationOpen] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     const updateClock = () => {
       const now = new Date();
 
       setClock(getLondonTime());
-      setActivePhaseIndexFromTime(now);
-    };
 
-    const setActivePhaseIndexFromTime = (date: Date) => {
       const londonHour = Number(
         new Intl.DateTimeFormat("en-GB", {
           timeZone: "Europe/London",
-          hour: "2-digit",
+          hour: "numeric",
           hour12: false,
-        }).format(date),
+        }).format(now),
       );
 
       setActivePhase(getActivePhaseIndex(londonHour));
@@ -183,28 +164,28 @@ export default function HomePage() {
 
     updateClock();
 
-    const interval = window.setInterval(updateClock, 30_000);
+    const interval = window.setInterval(updateClock, 1000);
 
     return () => window.clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    const onScroll = () => {
-      const y = window.scrollY;
+    const params = new URLSearchParams(window.location.search);
 
-      setScrolled(y > 40);
-      setShowTop(y > 900);
-    };
+    if (params.get("reserve") === "1") {
+      setReservationOpen(true);
 
-    onScroll();
-
-    window.addEventListener("scroll", onScroll, { passive: true });
-
-    return () => window.removeEventListener("scroll", onScroll);
+      window.history.replaceState(
+        {},
+        "",
+        window.location.pathname,
+      );
+    }
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen || reservationOpen ? "hidden" : "";
+    document.body.style.overflow =
+      menuOpen || reservationOpen ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
@@ -212,101 +193,79 @@ export default function HomePage() {
   }, [menuOpen, reservationOpen]);
 
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setMenuOpen(false);
-        setReservationOpen(false);
-      }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+
+      setMenuOpen(false);
+      setReservationOpen(false);
     };
 
-    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
-    return () => window.removeEventListener("keydown", onKeyDown);
+    return () =>
+      window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
-  const currentNight = nights[activeNight];
+  const openReservation = () => {
+    setSubmitted(false);
+    setReservationOpen(true);
+    setMenuOpen(false);
+  };
 
   const handleReservation = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setReservationSent(true);
-  };
-
-  const closeReservation = () => {
-    setReservationOpen(false);
-
-    window.setTimeout(() => {
-      setReservationSent(false);
-    }, 250);
+    setSubmitted(true);
   };
 
   return (
-    <main
-      className="site-shell"
-      style={
-        {
-          "--active-red": phases[activePhase].color,
-        } as CSSProperties
-      }
-    >
-      <nav className={`site-nav ${scrolled ? "is-scrolled" : ""}`}>
-        <Link
-          href="/"
-          className="nav-brand"
-          aria-label="VELVET HOUR home"
-        >
+    <main className="site-shell">
+      <header className="site-nav">
+        <Link href="/" className="nav-brand">
           VELVET HOUR
         </Link>
 
         <div className="nav-center">
           <span>SOHO / LONDON</span>
-          <span
-            className="nav-clock"
-            suppressHydrationWarning
-            aria-label="London local time"
-          >
-            LONDON {clock}
-          </span>
+          <span className="nav-divider">—</span>
+          <span suppressHydrationWarning>{clock} LDN</span>
         </div>
 
         <button
           type="button"
-          className={`menu-trigger ${menuOpen ? "is-open" : ""}`}
-          onClick={() => setMenuOpen((value) => !value)}
-          aria-expanded={menuOpen}
-          aria-controls="fullscreen-menu"
+          className="menu-trigger"
+          onClick={() => setMenuOpen(true)}
         >
-          <span>{menuOpen ? "CLOSE" : "MENU"}</span>
-          <span className="menu-lines" aria-hidden="true">
-            <i />
-            <i />
-          </span>
+          <span>MENU</span>
+          <i>
+            <b />
+            <b />
+          </i>
         </button>
-      </nav>
+      </header>
 
-      <section className="hero" aria-labelledby="hero-title">
-        <Image
-          src="/images/velvet/hero.jpg"
-          alt="VELVET HOUR late-night dining room"
-          fill
-          priority
-          sizes="100vw"
-          className="hero-image"
-        />
+      <section className="hero">
+        <div className="hero-image">
+          <Image
+            src="/images/velvet/hero.jpg"
+            alt="VELVET HOUR"
+            fill
+            priority
+            sizes="100vw"
+          />
+        </div>
 
         <div className="hero-overlay" />
 
         <div className="hero-topline">
+          <span>SOHO / LONDON</span>
           <span>EST. 2026</span>
-          <span>FOOD / WINE / MUSIC</span>
-          <span>OPEN LATE</span>
         </div>
 
         <div className="hero-content">
           <p className="eyebrow">A ROOM FOR THE HOURS BETWEEN</p>
 
-          <h1 id="hero-title">
+          <h1>
             VELVET
-            <br />
             <em>HOUR</em>
           </h1>
 
@@ -318,10 +277,7 @@ export default function HomePage() {
             </p>
 
             <div className="hero-actions">
-              <button
-                type="button"
-                onClick={() => setReservationOpen(true)}
-              >
+              <button type="button" onClick={openReservation}>
                 RESERVE A TABLE <span>↗</span>
               </button>
 
@@ -329,59 +285,61 @@ export default function HomePage() {
                 VIEW MENU <span>↗</span>
               </Link>
             </div>
+
+            <span className="hero-index">00 / 06</span>
           </div>
         </div>
-
-        <div className="hero-index">01 / 05</div>
       </section>
 
       <section className="intro section-pad">
-        <div className="section-number">01</div>
+        <div className="section-number">01 / THE HOUSE</div>
 
         <div className="intro-copy">
-          <p className="eyebrow">THE ROOM</p>
-
           <h2>
             NOT A RESTAURANT.
             <br />
-            <em>NOT QUITE A CLUB.</em>
+            NOT QUITE A
+            <em>CLUB.</em>
           </h2>
 
           <div className="intro-grid">
             <p className="intro-lead">
-              VELVET HOUR lives somewhere between dinner and the
-              first train home.
+              VELVET HOUR exists somewhere between dinner and dawn.
             </p>
 
             <div className="intro-body">
               <p>
-                A room built around good food, precise drinks and
-                music that changes with the hour.
+                A room for long dinners, short nights, unexpected
+                conversations and music that gets louder as the clock
+                gets later.
               </p>
+
               <p>
-                Come early for dinner. Stay for another drink.
-                Leave when the city starts moving again.
+                Come for the table. Stay for the room. Leave when the
+                city starts again.
               </p>
+
+              <span>SOHO / LONDON / 2026</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="states" aria-label="VELVET HOUR phases">
+      <section className="states section-pad">
         <div className="states-head">
           <div>
-            <p className="eyebrow">THE HOURS</p>
+            <span className="section-number">02 / THE HOURS</span>
             <h2>
               ONE ROOM.
               <br />
-              <em>FIVE PHASES.</em>
+              <em>FIVE STATES.</em>
             </h2>
           </div>
 
           <p className="states-note">
-            The room changes without
+            The room changes with
             <br />
-            asking you to leave.
+            London time.
           </p>
         </div>
 
@@ -389,12 +347,10 @@ export default function HomePage() {
           {phases.map((phase, index) => (
             <button
               type="button"
-              key={phase.time}
               className={`phase-row ${
                 activePhase === index ? "is-active" : ""
               }`}
-              onMouseEnter={() => setActivePhase(index)}
-              onFocus={() => setActivePhase(index)}
+              key={phase.time}
               onClick={() => setActivePhase(index)}
               style={
                 {
@@ -406,15 +362,9 @@ export default function HomePage() {
 
               <span className="phase-title">{phase.title}</span>
 
-              <span className="phase-meta">
-                {phase.meta.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
-              </span>
+              <span className="phase-meta">{phase.meta}</span>
 
-              <span className="phase-arrow" aria-hidden="true">
-                ↗
-              </span>
+              <span className="phase-arrow">↗</span>
             </button>
           ))}
         </div>
@@ -423,11 +373,12 @@ export default function HomePage() {
       <section className="menu-section section-pad">
         <div className="section-heading">
           <div>
-            <p className="eyebrow">THE MENU</p>
+            <span className="section-number">03 / THE MENU</span>
+
             <h2>
-              BUILT FOR
+              FOOD FOR
               <br />
-              <em>SHARING.</em>
+              <em>THE HOURS.</em>
             </h2>
           </div>
 
@@ -437,152 +388,141 @@ export default function HomePage() {
         </div>
 
         <div className="menu-grid">
-          {menuPreview.map((group, index) => (
-            <div className="menu-column" key={group.category}>
+          {menuPreview.map((column) => (
+            <div className="menu-column" key={column.section}>
               <div className="menu-column-head">
-                <span>0{index + 1}</span>
-                <span>{group.category}</span>
+                <span>{column.section}</span>
+                <span>—</span>
               </div>
 
               <div className="menu-items">
-                {group.items.map(([name, detail, price]) => (
+                {column.items.map(([name, note, price]) => (
                   <div className="menu-item" key={name}>
                     <div>
-                      <h3>{name}</h3>
-                      <p>{detail}</p>
+                      <strong>{name}</strong>
+                      <span>{note}</span>
                     </div>
 
-                    <span>{price}</span>
+                    <b>£{price}</b>
                   </div>
                 ))}
               </div>
             </div>
           ))}
         </div>
-
-        <div className="menu-note">
-          <span>DINNER FROM 17:30</span>
-          <span>VEGAN / VEGETARIAN OPTIONS</span>
-          <span>ASK ABOUT ALLERGIES</span>
-        </div>
       </section>
 
-      <section className="nights-section">
-        <div className="nights-image">
-          <Image
-            src={currentNight.image}
-            alt={`${currentNight.title} at VELVET HOUR`}
-            fill
-            sizes="(max-width: 900px) 100vw, 50vw"
-          />
+      <section className="nights-section section-pad">
+        <div className="section-heading">
+          <div>
+            <span className="section-number">04 / NIGHTS</span>
 
-          <div className="image-gradient" />
-
-          <div className="image-caption">
-            <span>VELVET HOUR / NIGHTS</span>
-            <span>{currentNight.date}</span>
+            <h2>
+              AFTER
+              <br />
+              <em>DARK.</em>
+            </h2>
           </div>
+
+          <Link href="/nights" className="text-link">
+            ALL NIGHTS <span>↗</span>
+          </Link>
         </div>
 
-        <div className="nights-content">
-          <div className="section-heading compact">
-            <div>
-              <p className="eyebrow">WHAT&apos;S ON</p>
-              <h2>
-                AFTER
-                <br />
-                <em>DARK.</em>
-              </h2>
+        <div className="nights-feature">
+          <div className="nights-image">
+            <Image
+              src="/images/velvet/velvet.jpg"
+              alt="VELVET HOUR night"
+              fill
+              sizes="(max-width: 760px) 100vw, 55vw"
+            />
+
+            <div className="image-gradient" />
+
+            <div className="image-caption">
+              <span>26 SEP</span>
+              <span>00:00—03:30</span>
             </div>
-
-            <Link href="/nights" className="text-link">
-              ALL NIGHTS <span>↗</span>
-            </Link>
           </div>
 
-          <div className="night-list">
-            {nights.map((night, index) => (
-              <button
-                type="button"
-                key={night.title}
-                className={`night-row ${
-                  activeNight === index ? "is-active" : ""
-                }`}
-                onClick={() => setActiveNight(index)}
-              >
-                <span className="night-date">
-                  <small>{night.day}</small>
-                  <strong>{night.date}</strong>
-                </span>
+          <div className="nights-content">
+            <span className="section-number">NEXT / 001</span>
 
-                <span className="night-main">
-                  <strong>{night.title}</strong>
-                  <small>{night.type}</small>
-                </span>
+            <h3>VELVET HOUR</h3>
 
-                <span className="night-time">{night.time}</span>
+            <p>
+              A room after midnight. M. Saint behind the decks.
+              Dinner becomes drinks. Drinks become something else.
+            </p>
 
-                <span className="night-arrow" aria-hidden="true">
-                  ↗
-                </span>
-              </button>
-            ))}
-          </div>
+            <div className="night-list">
+              {nights.map((night) => (
+                <Link
+                  href="/nights"
+                  className="night-row"
+                  key={night.date}
+                >
+                  <span>{night.date}</span>
 
-          <div className="night-feature">
-            <span>FEATURED</span>
-            <strong>{currentNight.artist}</strong>
-            <p>{currentNight.type}</p>
+                  <div className="night-main">
+                    <strong>{night.title}</strong>
+                    <small>{night.type}</small>
+                  </div>
+
+                  <span>{night.time}</span>
+                  <span>↗</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="manifesto section-pad">
-        <div className="section-number">03</div>
-
+      <section className="manifesto">
         <div className="manifesto-content">
-          <p className="eyebrow">THE IDEA</p>
+          <span className="section-number">05 / THE ROOM</span>
 
           <h2>
             SOMEWHERE
             <br />
             BETWEEN
             <br />
-            <em>DINNER &amp; DAWN.</em>
+            <em>DINNER & DAWN.</em>
           </h2>
+        </div>
 
-          <div className="manifesto-bottom">
-            <p>
-              VELVET HOUR is designed around the moment a dinner
-              becomes a night.
-            </p>
+        <div className="manifesto-bottom">
+          <p>
+            FOOD.
+            <br />
+            WINE.
+            <br />
+            MUSIC.
+          </p>
 
-            <p>
-              The lights get lower. The music gets louder.
-              Conversations become longer. Nothing tells you it&apos;s
-              time to go.
-            </p>
-          </div>
+          <span>NO FIXED ENDING.</span>
         </div>
       </section>
 
-      <section className="gallery-section">
+      <section className="gallery-section section-pad">
         <div className="gallery-head">
-          <p className="eyebrow">INSIDE THE ROOM</p>
-          <span>04 / 05</span>
+          <span className="section-number">06 / THE ROOM</span>
+
+          <p>LIGHT CHANGES. SO DOES EVERYTHING ELSE.</p>
         </div>
 
         <div className="gallery-grid">
-          {gallery.map((item) => (
+          {gallery.map((image, index) => (
             <div
-              className={`gallery-item ${item.className}`}
-              key={item.src}
+              className={`gallery-item gallery-item-${index + 1}`}
+              key={image}
             >
               <Image
-                src={item.src}
-                alt={item.alt}
+                src={image}
+                alt={`Velvet Hour room ${index + 1}`}
                 fill
-                sizes="(max-width: 700px) 100vw, 50vw"
+                sizes="(max-width: 760px) 100vw, 50vw"
               />
             </div>
           ))}
@@ -591,30 +531,29 @@ export default function HomePage() {
 
       <section className="reservation-section">
         <div className="reservation-inner">
-          <div>
-            <p className="eyebrow">TABLES / LATE NIGHTS</p>
+          <div className="reservation-copy">
+            <span className="section-number">RESERVATIONS</span>
 
             <h2>
-              COME FOR
+              COME
               <br />
-              <em>THE HOUR.</em>
+              <em>LATE.</em>
             </h2>
-          </div>
 
-          <div className="reservation-copy">
             <p>
-              Dinner, drinks or the last table after midnight.
-              Reservations are recommended.
+              Tables are released throughout the week.
+              Walk-ins are welcome when the room allows.
             </p>
-
-            <button
-              type="button"
-              className="reservation-button"
-              onClick={() => setReservationOpen(true)}
-            >
-              MAKE A RESERVATION <span>↗</span>
-            </button>
           </div>
+
+          <button
+            type="button"
+            className="reservation-button"
+            onClick={openReservation}
+          >
+            <span>RESERVE A TABLE</span>
+            <span>↗</span>
+          </button>
         </div>
       </section>
 
@@ -622,254 +561,224 @@ export default function HomePage() {
         <div className="footer-top">
           <div className="footer-brand">
             VELVET
-            <br />
             <em>HOUR</em>
           </div>
 
           <div className="footer-columns">
             <div>
-              <span className="footer-label">VISIT</span>
-              <p>
-                SOHO / LONDON
-                <br />
-                DINNER 17:30—LATE
-              </p>
-            </div>
-
-            <div>
-              <span className="footer-label">FOLLOW</span>
-              <p>
-                INSTAGRAM
-                <br />
-                @VELVETHOUR
-              </p>
-            </div>
-
-            <div>
               <span className="footer-label">EXPLORE</span>
-              <p>
-                <Link href="/menu">MENU</Link>
-                <br />
-                <Link href="/nights">NIGHTS</Link>
-              </p>
+              <Link href="/menu">MENU</Link>
+              <Link href="/nights">NIGHTS</Link>
+            </div>
+
+            <div>
+              <span className="footer-label">ROOM</span>
+              <span>SOHO / LONDON</span>
+              <span>FOOD / WINE / MUSIC</span>
+            </div>
+
+            <div>
+              <span className="footer-label">PROJECT</span>
+              <span>CONCEPT PROJECT</span>
+              <span>2026</span>
             </div>
           </div>
         </div>
 
         <div className="footer-bottom">
+          <span>GOOD FOOD. BAD HOURS.</span>
           <span>© 2026 VELVET HOUR</span>
-          <span>CONCEPT PROJECT / LONDON</span>
-          <span>05 / 05</span>
+          <button
+            type="button"
+            className="back-top"
+            onClick={() =>
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              })
+            }
+          >
+            BACK TO TOP ↑
+          </button>
         </div>
       </footer>
 
-      {showTop && (
-        <button
-          type="button"
-          className="back-top"
-          onClick={() =>
-            window.scrollTo({
-              top: 0,
-              behavior: "smooth",
-            })
-          }
-          aria-label="Back to top"
-        >
-          ↑
-        </button>
-      )}
-
       <div
-        id="fullscreen-menu"
-        className={`fullscreen-menu ${menuOpen ? "is-open" : ""}`}
-        aria-hidden={!menuOpen}
+        className={`fullscreen-menu ${
+          menuOpen ? "fullscreen-menu-open" : ""
+        }`}
       >
         <div className="fullscreen-menu-inner">
           <div className="fullscreen-menu-top">
-            <span>VELVET HOUR / 2026</span>
-            <span>SOHO / LONDON</span>
-          </div>
-
-          <nav className="fullscreen-links" aria-label="Main navigation">
-            <Link
-              href="/"
-              onClick={() => setMenuOpen(false)}
-            >
-              <span>01</span>
-              HOME
-            </Link>
-
-            <Link
-              href="/menu"
-              onClick={() => setMenuOpen(false)}
-            >
-              <span>02</span>
-              MENU
-            </Link>
-
-            <Link
-              href="/nights"
-              onClick={() => setMenuOpen(false)}
-            >
-              <span>03</span>
-              NIGHTS
-            </Link>
+            <span>VELVET HOUR</span>
 
             <button
               type="button"
-              onClick={() => {
-                setMenuOpen(false);
-                setReservationOpen(true);
-              }}
+              onClick={() => setMenuOpen(false)}
             >
-              <span>04</span>
+              CLOSE ×
+            </button>
+          </div>
+
+          <nav className="fullscreen-links">
+            <Link href="/" onClick={() => setMenuOpen(false)}>
+              <small>01</small>
+              HOME
+            </Link>
+
+            <Link href="/menu" onClick={() => setMenuOpen(false)}>
+              <small>02</small>
+              MENU
+            </Link>
+
+            <Link href="/nights" onClick={() => setMenuOpen(false)}>
+              <small>03</small>
+              NIGHTS
+            </Link>
+
+            <button type="button" onClick={openReservation}>
+              <small>04</small>
               RESERVE
             </button>
           </nav>
 
           <div className="fullscreen-menu-bottom">
-            <span>FOOD / WINE / MUSIC</span>
-            <span
-              suppressHydrationWarning
-            >
-              LONDON {clock}
-            </span>
+            <span>SOHO / LONDON</span>
+            <span suppressHydrationWarning>{clock} LDN</span>
           </div>
         </div>
       </div>
 
-      {reservationOpen && (
-        <div
-          className="reservation-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="reservation-title"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              closeReservation();
-            }
-          }}
-        >
-          <div className="reservation-card">
-            <button
-              type="button"
-              className="modal-close"
-              onClick={closeReservation}
-              aria-label="Close reservation"
-            >
-              ×
-            </button>
+      <div
+        className={`reservation-modal ${
+          reservationOpen ? "reservation-modal-open" : ""
+        }`}
+      >
+        <div className="reservation-card">
+          <button
+            type="button"
+            className="modal-close"
+            onClick={() => setReservationOpen(false)}
+            aria-label="Close reservation"
+          >
+            CLOSE ×
+          </button>
 
-            {!reservationSent ? (
-              <>
-                <p className="eyebrow">TABLE RESERVATION</p>
+          {!submitted ? (
+            <>
+              <span className="section-number">RESERVATIONS / 2026</span>
 
-                <h2 id="reservation-title">
-                  SAVE
-                  <br />
-                  <em>YOUR HOUR.</em>
-                </h2>
+              <h2>
+                BOOK
+                <br />
+                <em>THE ROOM.</em>
+              </h2>
 
-                <form
-                  className="reservation-form"
-                  onSubmit={handleReservation}
-                >
+              <form
+                className="reservation-form"
+                onSubmit={handleReservation}
+              >
+                <div className="form-row">
                   <label>
                     NAME
                     <input
-                      type="text"
-                      name="name"
-                      placeholder="Your name"
                       required
+                      name="name"
+                      type="text"
+                      placeholder="Your name"
                     />
                   </label>
 
                   <label>
                     EMAIL
                     <input
-                      type="email"
-                      name="email"
-                      placeholder="you@example.com"
                       required
+                      name="email"
+                      type="email"
+                      placeholder="you@email.com"
                     />
                   </label>
+                </div>
 
-                  <div className="form-row">
-                    <label>
-                      DATE
-                      <input
-                        type="date"
-                        name="date"
-                        required
-                      />
-                    </label>
-
-                    <label>
-                      GUESTS
-                      <select name="guests" defaultValue="2">
-                        <option value="1">1 GUEST</option>
-                        <option value="2">2 GUESTS</option>
-                        <option value="3">3 GUESTS</option>
-                        <option value="4">4 GUESTS</option>
-                        <option value="5">5 GUESTS</option>
-                        <option value="6">6 GUESTS</option>
-                        <option value="7">7 GUESTS</option>
-                        <option value="8">8 GUESTS</option>
-                      </select>
-                    </label>
-                  </div>
-
+                <div className="form-row">
                   <label>
-                    TIME
-                    <select name="time" defaultValue="21:00">
-                      <option value="18:00">18:00</option>
-                      <option value="19:00">19:00</option>
-                      <option value="20:00">20:00</option>
-                      <option value="21:00">21:00</option>
-                      <option value="22:00">22:00</option>
-                      <option value="23:00">23:00</option>
-                    </select>
+                    DATE
+                    <input required name="date" type="date" />
                   </label>
 
-                  <button type="submit" className="form-submit">
-                    REQUEST TABLE <span>↗</span>
-                  </button>
-                </form>
+                  <label>
+                    GUESTS
+                    <select required name="guests" defaultValue="">
+                      <option value="" disabled>
+                        Select
+                      </option>
+                      <option value="2">2 guests</option>
+                      <option value="3">3 guests</option>
+                      <option value="4">4 guests</option>
+                      <option value="5">5 guests</option>
+                      <option value="6">6 guests</option>
+                      <option value="7+">7+ guests</option>
+                    </select>
+                  </label>
+                </div>
+
+                <label>
+                  TIME
+                  <select required name="time" defaultValue="">
+                    <option value="" disabled>
+                      Select a time
+                    </option>
+                    <option value="18:00">18:00</option>
+                    <option value="19:00">19:00</option>
+                    <option value="20:00">20:00</option>
+                    <option value="21:00">21:00</option>
+                    <option value="22:00">22:00</option>
+                    <option value="23:00">23:00</option>
+                    <option value="00:00">00:00</option>
+                  </select>
+                </label>
+
+                <button type="submit" className="form-submit">
+                  REQUEST A TABLE <span>↗</span>
+                </button>
 
                 <p className="form-note">
-                  This is a concept experience. No real reservation
-                  will be processed.
+                  CONCEPT PROJECT — THIS FORM DOES NOT PROCESS A REAL
+                  RESERVATION.
                 </p>
-              </>
-            ) : (
-              <div className="reservation-success">
-                <span className="success-mark">✓</span>
+              </form>
+            </>
+          ) : (
+            <div className="reservation-success">
+              <span className="success-mark">✓</span>
 
-                <p className="eyebrow">REQUEST RECEIVED</p>
+              <span className="section-number">
+                REQUEST RECEIVED
+              </span>
 
-                <h2>
-                  SEE YOU
-                  <br />
-                  <em>AFTER DARK.</em>
-                </h2>
+              <h2>
+                SEE YOU
+                <br />
+                <em>LATE.</em>
+              </h2>
 
-                <p>
-                  Your reservation request has been recorded for
-                  this concept experience.
-                </p>
+              <p>
+                Your reservation request has been received.
+                This is a concept-project interaction and does not
+                create a real booking.
+              </p>
 
-                <button
-                  type="button"
-                  className="form-submit"
-                  onClick={closeReservation}
-                >
-                  CLOSE <span>×</span>
-                </button>
-              </div>
-            )}
-          </div>
+              <button
+                type="button"
+                className="form-submit"
+                onClick={() => setReservationOpen(false)}
+              >
+                CLOSE <span>×</span>
+              </button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </main>
   );
 }
