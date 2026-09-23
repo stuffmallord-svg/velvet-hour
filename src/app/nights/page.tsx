@@ -260,7 +260,9 @@ export default function NightsPage() {
 
                 <div className={styles.nightTime}>{night.time}</div>
 
-                <div className={styles.nightArrow}>↗</div>
+                <div className={styles.nightArrow} aria-hidden="true">
+  <span>↗︎</span>
+</div>
 
                 <span className={styles.rowIndex}>
                   {String(index + 1).padStart(2, "0")}

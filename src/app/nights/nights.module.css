@@ -659,15 +659,31 @@
 .nightArrow {
   align-self: center;
 
-  color: var(--red-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 22px;
+  height: 22px;
+
+  color: var(--paper);
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 17px;
+  font-weight: 400;
+  line-height: 1;
 
   opacity: 0;
-  transform: translate(-5px, 5px);
+  transition: opacity 0.2s ease;
+}
 
-  transition:
-    opacity 250ms ease,
-    transform 350ms var(--ease-out);
+.nightArrow span {
+  display: block;
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1;
+  font-variant-emoji: text;
 }
 
 .nightRow:hover .nightArrow,
@@ -1712,6 +1728,29 @@
     gap: 13px;
     font-size: clamp(50px, 16vw, 85px);
   }
+
+  .nightRow {
+  position: relative;
+}
+
+.nightRow::after {
+  content: "↗";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(245, 241, 234, 0.5);
+  -webkit-text-fill-color: rgba(245, 241, 234, 0.5);
+}
+
+.nightRow .nightArrow {
+  display: none;
+}
+
 }
 
 /* --------------------------------------------------
