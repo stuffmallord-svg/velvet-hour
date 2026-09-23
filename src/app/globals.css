@@ -37,6 +37,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: hidden;
   background:
     radial-gradient(
       circle at 78% 18%,
@@ -48,12 +49,6 @@ body {
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
-}
-
-body::selection {
-  background: var(--paper);
-  color: var(--black);
 }
 
 ::selection {
@@ -70,21 +65,25 @@ button,
 input,
 select,
 textarea {
+  margin: 0;
   font: inherit;
 }
 
 button {
+  appearance: none;
+  -webkit-appearance: none;
+  border-radius: 0;
   color: inherit;
-}
-
-img {
-  display: block;
-  max-width: 100%;
 }
 
 button,
 a {
   -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  display: block;
+  max-width: 100%;
 }
 
 button:focus-visible,
@@ -95,10 +94,6 @@ textarea:focus-visible {
   outline: 1px solid var(--paper);
   outline-offset: 5px;
 }
-
-/* -------------------------------------------------- */
-/* Scrollbar */
-/* -------------------------------------------------- */
 
 ::-webkit-scrollbar {
   width: 8px;
@@ -117,33 +112,31 @@ textarea:focus-visible {
   background: rgba(241, 236, 229, 0.38);
 }
 
-/* -------------------------------------------------- */
-/* Global page shell */
-/* -------------------------------------------------- */
-
 .site-shell {
   min-height: 100vh;
   overflow: clip;
   background: var(--black);
+  animation: softPageIn 700ms var(--ease-out) both;
 }
 
-.site-shell a {
+.site-shell a,
+.site-shell button {
   transition:
     color 300ms var(--ease-out),
     opacity 300ms var(--ease-out),
-    border-color 300ms var(--ease-out);
+    border-color 300ms var(--ease-out),
+    background-color 300ms var(--ease-out),
+    transform 300ms var(--ease-out);
 }
 
-/* -------------------------------------------------- */
-/* Navigation */
-/* -------------------------------------------------- */
+/* NAVIGATION */
 
 .site-nav {
   position: absolute;
   z-index: 50;
   top: 0;
-  left: 0;
   right: 0;
+  left: 0;
 
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -179,10 +172,10 @@ textarea:focus-visible {
   align-items: center;
   gap: 14px;
 
+  color: var(--muted);
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.16em;
-  color: var(--muted);
   text-transform: uppercase;
 }
 
@@ -200,28 +193,31 @@ textarea:focus-visible {
   align-items: center;
   gap: 12px;
 
-  border: 0;
   padding: 10px 0;
 
+  border: 0;
   background: transparent;
+
   cursor: pointer;
 
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-
-  transition:
-    opacity 300ms var(--ease-out),
-    transform 300ms var(--ease-out);
 }
 
-.menu-trigger::after {
-  content: "";
+.menu-trigger i {
+  display: flex;
+  width: 25px;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.menu-trigger b {
+  display: block;
   width: 25px;
   height: 1px;
   background: currentColor;
-
   transform-origin: right;
   transition: transform 450ms var(--ease-out);
 }
@@ -230,19 +226,20 @@ textarea:focus-visible {
   opacity: 0.7;
 }
 
-.menu-trigger:hover::after {
+.menu-trigger:hover b:last-child {
   transform: scaleX(0.58);
 }
 
-/* -------------------------------------------------- */
-/* Hero */
-/* -------------------------------------------------- */
+/* HERO */
 
 .hero {
   position: relative;
-  min-height: 100svh;
+
   display: flex;
   align-items: flex-end;
+
+  min-height: 100svh;
+
   overflow: hidden;
   background: #060606;
 }
@@ -255,9 +252,11 @@ textarea:focus-visible {
 .hero-image img {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
 
   transform: scale(1.015);
+
   filter: saturate(0.82) contrast(1.05);
 
   animation: heroImageIn 1.8s var(--ease-out) both;
@@ -286,18 +285,19 @@ textarea:focus-visible {
   position: absolute;
   z-index: 2;
   top: 106px;
-  left: var(--side);
   right: var(--side);
+  left: var(--side);
 
   display: flex;
   justify-content: space-between;
   gap: 30px;
 
+  color: rgba(241, 236, 229, 0.66);
+
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(241, 236, 229, 0.66);
 }
 
 .hero-content {
@@ -306,22 +306,25 @@ textarea:focus-visible {
 
   width: 100%;
   max-width: var(--container);
+
   margin: 0 auto;
   padding: 0 var(--side) clamp(30px, 5vw, 76px);
 }
 
 .eyebrow {
-  margin-bottom: 18px;
+  margin: 0 0 18px;
+
+  color: var(--muted-strong);
 
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--muted-strong);
 }
 
 .hero-content h1 {
   max-width: 1200px;
+
   margin: 0;
 
   font-family: var(--serif);
@@ -330,27 +333,37 @@ textarea:focus-visible {
   line-height: 0.78;
   letter-spacing: -0.065em;
   text-transform: uppercase;
-
   text-wrap: balance;
+}
+
+.hero-content h1 em,
+.intro-copy h2 em,
+.states-head h2 em,
+.section-heading h2 em,
+.reservation-copy h2 em,
+.reservation-card h2 em,
+.manifesto-content h2 em {
+  font-style: normal;
+  color: var(--red-light);
 }
 
 .hero-bottom {
   display: grid;
   grid-template-columns: minmax(240px, 420px) 1fr auto;
-  gap: 50px;
   align-items: end;
+  gap: 50px;
 
   margin-top: clamp(35px, 6vw, 70px);
 }
 
 .hero-bottom p {
+  max-width: 390px;
   margin: 0;
 
-  max-width: 390px;
+  color: var(--muted-strong);
 
   font-size: 13px;
   line-height: 1.65;
-  color: var(--muted-strong);
 }
 
 .hero-actions {
@@ -359,25 +372,32 @@ textarea:focus-visible {
   gap: 12px;
 }
 
-.hero-actions a {
+.hero-actions a,
+.hero-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
   min-height: 42px;
   padding: 13px 17px;
 
   border: 1px solid rgba(241, 236, 229, 0.3);
+  border-radius: 0;
+
+  background: transparent;
+  color: var(--paper);
+
+  cursor: pointer;
 
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-
-  transition:
-    background 400ms var(--ease-out),
-    color 400ms var(--ease-out),
-    border-color 400ms var(--ease-out),
-    transform 400ms var(--ease-out);
 }
 
-.hero-actions a:hover {
+.hero-actions a:hover,
+.hero-actions button:hover {
   background: var(--paper);
   color: var(--black);
   border-color: var(--paper);
@@ -387,15 +407,14 @@ textarea:focus-visible {
 .hero-index {
   justify-self: end;
 
+  color: rgba(241, 236, 229, 0.5);
+
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.16em;
-  color: rgba(241, 236, 229, 0.5);
 }
 
-/* -------------------------------------------------- */
-/* Generic sections */
-/* -------------------------------------------------- */
+/* GENERIC */
 
 .section-pad {
   width: min(var(--container), 100%);
@@ -404,12 +423,14 @@ textarea:focus-visible {
 }
 
 .section-number {
+  display: block;
   margin-bottom: 28px;
+
+  color: var(--muted);
 
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.15em;
-  color: var(--muted);
 }
 
 .section-number::before {
@@ -466,14 +487,13 @@ textarea:focus-visible {
   max-width: 440px;
   justify-self: end;
 
+  color: rgba(8, 8, 8, 0.62);
+
   font-size: 13px;
   line-height: 1.75;
-  color: rgba(8, 8, 8, 0.62);
 }
 
-/* -------------------------------------------------- */
-/* States */
-/* -------------------------------------------------- */
+/* STATES */
 
 .states {
   background:
@@ -487,14 +507,19 @@ textarea:focus-visible {
 
 .states-head {
   display: flex;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 40px;
-  align-items: flex-end;
+
   margin-bottom: 55px;
 }
 
+.states-head > div {
+  min-width: 0;
+}
+
 .states-head h2,
-.section-heading {
+.section-heading h2 {
   margin: 0;
 
   font-family: var(--serif);
@@ -502,6 +527,18 @@ textarea:focus-visible {
   font-weight: 400;
   line-height: 0.86;
   letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+.states-note {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-family: var(--mono);
+  font-size: 9px;
+  line-height: 1.6;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -517,26 +554,63 @@ textarea:focus-visible {
   align-items: center;
   gap: 25px;
 
+  width: 100%;
   min-height: 112px;
+  padding: 0;
+
+  border: 0;
   border-bottom: 1px solid var(--line);
 
+  background: transparent;
+  color: var(--paper);
+
+  text-align: left;
+
+  cursor: pointer;
+
   transition:
-    background 500ms var(--ease-out),
-    padding 500ms var(--ease-out);
+    background-color 500ms var(--ease-out),
+    padding 500ms var(--ease-out),
+    border-color 500ms var(--ease-out);
+}
+
+.phase-row:hover,
+.phase-row.is-active {
+  background: rgba(241, 236, 229, 0.035);
 }
 
 .phase-row:hover {
   padding-left: 16px;
-  background: rgba(241, 236, 229, 0.035);
+}
+
+.phase-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+
+  width: 2px;
+  height: 0;
+
+  background: var(--phase-color, var(--red-light));
+
+  transform: translateY(-50%);
+
+  transition: height 400ms var(--ease-out);
+}
+
+.phase-row.is-active::before {
+  height: 48px;
 }
 
 .phase-time,
 .phase-meta {
+  color: var(--muted);
+
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted);
 }
 
 .phase-title {
@@ -548,25 +622,57 @@ textarea:focus-visible {
 }
 
 .phase-arrow {
+  color: var(--muted);
+
   font-family: var(--mono);
   font-size: 14px;
-  color: var(--muted);
+
   transition:
     color 300ms var(--ease-out),
     transform 400ms var(--ease-out);
 }
 
-.phase-row:hover .phase-arrow {
+.phase-row:hover .phase-arrow,
+.phase-row.is-active .phase-arrow {
   color: var(--paper);
   transform: translateX(5px);
 }
 
-/* -------------------------------------------------- */
-/* Menu section */
-/* -------------------------------------------------- */
+/* MENU */
 
 .menu-section {
   background: #111011;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  flex: 0 0 auto;
+
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line-strong);
+
+  color: var(--muted);
+
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.text-link:hover {
+  color: var(--paper);
+  border-color: var(--paper);
+  transform: translateX(4px);
 }
 
 .menu-grid {
@@ -619,21 +725,39 @@ textarea:focus-visible {
   border-color: rgba(241, 236, 229, 0.2);
 }
 
+.menu-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .menu-item-name {
   font-family: var(--serif);
   font-size: 18px;
+  font-weight: 400;
   line-height: 1.1;
 }
 
-.menu-item-price {
-  font-family: var(--mono);
-  font-size: 9px;
+.menu-item-note {
   color: var(--muted);
+
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* -------------------------------------------------- */
-/* Nights */
-/* -------------------------------------------------- */
+.menu-item-price {
+  align-self: start;
+
+  color: var(--muted);
+
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 400;
+}
+
+/* NIGHTS */
 
 .nights-section {
   background: #090909;
@@ -642,6 +766,7 @@ textarea:focus-visible {
 .nights-feature {
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
+
   min-height: min(720px, 70vw);
 
   margin-top: 75px;
@@ -655,6 +780,7 @@ textarea:focus-visible {
 .nights-image img {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
 
   filter: saturate(0.72) contrast(1.08);
@@ -672,12 +798,12 @@ textarea:focus-visible {
 .image-gradient {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(
-      180deg,
-      transparent 45%,
-      rgba(0, 0, 0, 0.75)
-    );
+
+  background: linear-gradient(
+    180deg,
+    transparent 45%,
+    rgba(0, 0, 0, 0.75)
+  );
 }
 
 .image-caption {
@@ -708,6 +834,7 @@ textarea:focus-visible {
 
 .nights-content h3 {
   max-width: 600px;
+
   margin: 0;
 
   font-family: var(--serif);
@@ -718,17 +845,29 @@ textarea:focus-visible {
   text-transform: uppercase;
 }
 
+.nights-content > p {
+  max-width: 430px;
+
+  margin: 35px 0 0;
+
+  color: rgba(255, 255, 255, 0.75);
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
 .night-list {
   margin-top: 70px;
 }
 
 .night-row {
   display: grid;
-  grid-template-columns: 80px 1fr auto;
-  gap: 18px;
+  grid-template-columns: 80px 1fr auto auto;
   align-items: start;
+  gap: 18px;
 
   padding: 18px 0;
+
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 
   font-family: var(--mono);
@@ -737,18 +876,37 @@ textarea:focus-visible {
   text-transform: uppercase;
 }
 
+.night-row:hover {
+  padding-left: 8px;
+}
+
 .night-main {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
   font-size: 11px;
 }
 
-/* -------------------------------------------------- */
-/* Manifesto */
-/* -------------------------------------------------- */
+.night-main strong {
+  font-weight: 500;
+}
+
+.night-main small {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 8px;
+}
+
+/* MANIFESTO */
 
 .manifesto {
   min-height: 80vh;
+
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+
+  padding: clamp(90px, 12vw, 180px) var(--side);
 
   background: var(--paper);
   color: var(--black);
@@ -756,10 +914,21 @@ textarea:focus-visible {
 
 .manifesto-content {
   width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+}
+
+.manifesto-content .section-number {
+  color: rgba(8, 8, 8, 0.46);
+}
+
+.manifesto-content .section-number::before {
+  color: var(--red);
 }
 
 .manifesto-content h2 {
   max-width: 1200px;
+
   margin: 0;
 
   font-family: var(--serif);
@@ -771,11 +940,14 @@ textarea:focus-visible {
 }
 
 .manifesto-bottom {
+  width: 100%;
+  max-width: var(--container);
+  margin: 80px auto 0;
+
   display: flex;
   justify-content: space-between;
   gap: 30px;
 
-  margin-top: 80px;
   padding-top: 20px;
 
   border-top: 1px solid rgba(8, 8, 8, 0.16);
@@ -786,9 +958,11 @@ textarea:focus-visible {
   text-transform: uppercase;
 }
 
-/* -------------------------------------------------- */
-/* Gallery */
-/* -------------------------------------------------- */
+.manifesto-bottom p {
+  margin: 0;
+}
+
+/* GALLERY */
 
 .gallery-section {
   padding-bottom: 0;
@@ -797,10 +971,22 @@ textarea:focus-visible {
 
 .gallery-head {
   display: flex;
-  justify-content: space-between;
   align-items: flex-end;
+  justify-content: space-between;
   gap: 30px;
+
   margin-bottom: 60px;
+}
+
+.gallery-head p {
+  margin: 0;
+
+  color: var(--muted);
+
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .gallery-grid {
@@ -818,6 +1004,7 @@ textarea:focus-visible {
 .gallery-item img {
   width: 100%;
   height: 100%;
+
   object-fit: cover;
 
   filter: saturate(0.72);
@@ -852,9 +1039,7 @@ textarea:focus-visible {
   aspect-ratio: 1.25;
 }
 
-/* -------------------------------------------------- */
-/* Reservation */
-/* -------------------------------------------------- */
+/* RESERVATION */
 
 .reservation-section {
   position: relative;
@@ -863,10 +1048,15 @@ textarea:focus-visible {
 }
 
 .reservation-inner {
+  width: min(var(--container), 100%);
+  margin: 0 auto;
+
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: end;
   gap: 50px;
+
+  padding: clamp(90px, 12vw, 160px) var(--side);
 }
 
 .reservation-copy h2 {
@@ -884,31 +1074,34 @@ textarea:focus-visible {
   max-width: 430px;
   margin: 38px 0 0;
 
+  color: rgba(255, 255, 255, 0.72);
+
   font-size: 13px;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.72);
 }
 
 .reservation-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 18px;
 
   min-width: 190px;
   min-height: 50px;
   padding: 14px 20px;
 
   border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 0;
+
+  background: transparent;
+  color: #fff;
+
+  cursor: pointer;
 
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-
-  transition:
-    background 400ms var(--ease-out),
-    color 400ms var(--ease-out),
-    transform 400ms var(--ease-out);
 }
 
 .reservation-button:hover {
@@ -917,9 +1110,7 @@ textarea:focus-visible {
   transform: translateY(-3px);
 }
 
-/* -------------------------------------------------- */
-/* Footer */
-/* -------------------------------------------------- */
+/* FOOTER */
 
 .site-footer {
   padding: 80px var(--side) 28px;
@@ -943,6 +1134,11 @@ textarea:focus-visible {
   text-transform: uppercase;
 }
 
+.footer-brand em {
+  font-style: normal;
+  color: var(--red-light);
+}
+
 .footer-columns {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -954,11 +1150,17 @@ textarea:focus-visible {
   flex-direction: column;
   gap: 9px;
 
+  color: var(--muted);
+
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: var(--muted);
+}
+
+.footer-label {
+  margin-bottom: 8px;
+  color: var(--paper);
 }
 
 .footer-columns a:hover {
@@ -976,25 +1178,34 @@ textarea:focus-visible {
 
   border-top: 1px solid var(--line);
 
+  color: var(--muted);
+
   font-family: var(--mono);
   font-size: 8px;
   letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: var(--muted);
 }
 
 .back-top {
+  padding: 0;
+  border: 0;
+
+  background: transparent;
+  color: inherit;
+
   cursor: pointer;
-  transition: color 300ms var(--ease-out);
+
+  font-family: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
 }
 
 .back-top:hover {
   color: var(--paper);
 }
 
-/* -------------------------------------------------- */
-/* Fullscreen menu */
-/* -------------------------------------------------- */
+/* FULLSCREEN MENU */
 
 .fullscreen-menu {
   position: fixed;
@@ -1004,6 +1215,8 @@ textarea:focus-visible {
   visibility: hidden;
   opacity: 0;
 
+  pointer-events: none;
+
   background:
     radial-gradient(
       circle at 72% 24%,
@@ -1011,8 +1224,6 @@ textarea:focus-visible {
       transparent 31%
     ),
     rgba(8, 8, 8, 0.98);
-
-  pointer-events: none;
 
   transition:
     opacity 500ms var(--ease-out),
@@ -1028,36 +1239,46 @@ textarea:focus-visible {
 .fullscreen-menu-inner {
   position: relative;
 
-  width: min(var(--container), 100%);
-  min-height: 100%;
-  margin: 0 auto;
-  padding: 35px var(--side) 40px;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  width: min(var(--container), 100%);
+  min-height: 100%;
+
+  margin: 0 auto;
+  padding: 35px var(--side) 40px;
 }
 
 .fullscreen-menu-top,
 .fullscreen-menu-bottom {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 30px;
+
+  color: var(--muted);
 
   font-family: var(--mono);
   font-size: 9px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--muted);
 }
 
 .fullscreen-menu-top button {
-  border: 0;
-  background: transparent;
-  cursor: pointer;
   padding: 10px 0;
+
+  border: 0;
+
+  background: transparent;
   color: var(--paper);
+
+  cursor: pointer;
+
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
 .fullscreen-links {
@@ -1067,8 +1288,21 @@ textarea:focus-visible {
   gap: 2px;
 }
 
-.fullscreen-links a {
+.fullscreen-links a,
+.fullscreen-links button {
   position: relative;
+
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+
+  padding: 0;
+  border: 0;
+
+  background: transparent;
+  color: var(--paper);
+
+  cursor: pointer;
 
   font-family: var(--serif);
   font-size: clamp(62px, 11vw, 160px);
@@ -1076,43 +1310,25 @@ textarea:focus-visible {
   line-height: 0.8;
   letter-spacing: -0.065em;
   text-transform: uppercase;
-
-  transition:
-    color 350ms var(--ease-out),
-    transform 500ms var(--ease-out);
 }
 
-.fullscreen-links a::before {
-  content: "↗";
+.fullscreen-links small {
+  width: 24px;
 
-  position: absolute;
-  left: -28px;
-  top: 12%;
+  color: var(--muted);
 
   font-family: var(--mono);
-  font-size: 12px;
-
-  opacity: 0;
-  transform: translateX(-8px);
-
-  transition:
-    opacity 300ms var(--ease-out),
-    transform 300ms var(--ease-out);
+  font-size: 9px;
+  letter-spacing: 0.1em;
 }
 
-.fullscreen-links a:hover {
+.fullscreen-links a:hover,
+.fullscreen-links button:hover {
   color: var(--red-light);
   transform: translateX(12px);
 }
 
-.fullscreen-links a:hover::before {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-/* -------------------------------------------------- */
-/* Reservation modal */
-/* -------------------------------------------------- */
+/* MODAL */
 
 .reservation-modal {
   position: fixed;
@@ -1126,6 +1342,7 @@ textarea:focus-visible {
   padding: 20px;
 
   background: rgba(0, 0, 0, 0.72);
+
   backdrop-filter: blur(14px);
 
   opacity: 0;
@@ -1148,6 +1365,7 @@ textarea:focus-visible {
 
   width: min(650px, 100%);
   max-height: calc(100vh - 40px);
+
   overflow: auto;
 
   padding: clamp(28px, 5vw, 55px);
@@ -1169,8 +1387,13 @@ textarea:focus-visible {
   top: 20px;
   right: 24px;
 
+  padding: 10px 0;
+
   border: 0;
+
   background: transparent;
+  color: var(--black);
+
   cursor: pointer;
 
   font-family: var(--mono);
@@ -1188,6 +1411,14 @@ textarea:focus-visible {
   line-height: 0.82;
   letter-spacing: -0.055em;
   text-transform: uppercase;
+}
+
+.reservation-card .section-number {
+  color: rgba(8, 8, 8, 0.48);
+}
+
+.reservation-card .section-number::before {
+  color: var(--red);
 }
 
 .reservation-form {
@@ -1217,6 +1448,7 @@ textarea:focus-visible {
 .reservation-form select {
   width: 100%;
   min-height: 44px;
+
   padding: 11px 12px;
 
   border: 1px solid rgba(8, 8, 8, 0.2);
@@ -1226,6 +1458,13 @@ textarea:focus-visible {
   color: var(--black);
 
   outline: none;
+
+  font-family: var(--sans);
+  font-size: 14px;
+}
+
+.reservation-form input::placeholder {
+  color: rgba(8, 8, 8, 0.4);
 }
 
 .reservation-form input:focus,
@@ -1234,10 +1473,18 @@ textarea:focus-visible {
 }
 
 .form-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
   min-height: 48px;
   margin-top: 8px;
+  padding: 12px 16px;
 
   border: 1px solid var(--black);
+  border-radius: 0;
+
   background: var(--black);
   color: var(--paper);
 
@@ -1247,10 +1494,6 @@ textarea:focus-visible {
   font-size: 9px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-
-  transition:
-    background 300ms var(--ease-out),
-    color 300ms var(--ease-out);
 }
 
 .form-submit:hover {
@@ -1261,23 +1504,36 @@ textarea:focus-visible {
 .form-note {
   margin: 0;
 
+  color: rgba(8, 8, 8, 0.48);
+
   font-family: var(--mono);
   font-size: 8px;
   line-height: 1.6;
-  color: rgba(8, 8, 8, 0.48);
 }
 
 .reservation-success {
   padding: 35px 0 5px;
 }
 
+.reservation-success p {
+  max-width: 430px;
+
+  margin: 0 0 25px;
+
+  color: rgba(8, 8, 8, 0.62);
+
+  font-size: 13px;
+  line-height: 1.7;
+}
+
 .success-mark {
   width: 42px;
   height: 42px;
-  margin-bottom: 25px;
 
   display: grid;
   place-items: center;
+
+  margin-bottom: 25px;
 
   border: 1px solid var(--black);
 
@@ -1285,9 +1541,7 @@ textarea:focus-visible {
   font-size: 12px;
 }
 
-/* -------------------------------------------------- */
-/* Subtle entrance animation */
-/* -------------------------------------------------- */
+/* ANIMATION */
 
 @keyframes heroImageIn {
   from {
@@ -1311,13 +1565,7 @@ textarea:focus-visible {
   }
 }
 
-.site-shell {
-  animation: softPageIn 700ms var(--ease-out) both;
-}
-
-/* -------------------------------------------------- */
-/* Mobile */
-/* -------------------------------------------------- */
+/* TABLET */
 
 @media (max-width: 900px) {
   .site-nav {
@@ -1390,6 +1638,8 @@ textarea:focus-visible {
   }
 }
 
+/* MOBILE */
+
 @media (max-width: 650px) {
   :root {
     --side: 18px;
@@ -1405,7 +1655,6 @@ textarea:focus-visible {
 
   .hero-topline {
     top: 84px;
-
     font-size: 8px;
   }
 
@@ -1426,7 +1675,9 @@ textarea:focus-visible {
     align-items: stretch;
   }
 
-  .hero-actions a {
+  .hero-actions a,
+  .hero-actions button {
+    width: 100%;
     text-align: center;
   }
 
@@ -1436,9 +1687,14 @@ textarea:focus-visible {
   }
 
   .states-head,
-  .gallery-head {
+  .gallery-head,
+  .section-heading {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .section-heading {
+    gap: 28px;
   }
 
   .phase-row {
@@ -1465,9 +1721,10 @@ textarea:focus-visible {
   }
 
   .night-row {
-    grid-template-columns: 60px 1fr;
+    grid-template-columns: 60px 1fr auto;
   }
 
+  .night-row > :nth-child(3),
   .night-row > :last-child {
     display: none;
   }
@@ -1515,11 +1772,12 @@ textarea:focus-visible {
     padding-bottom: 25px;
   }
 
-  .fullscreen-links a {
+  .fullscreen-links a,
+  .fullscreen-links button {
     font-size: clamp(55px, 17vw, 100px);
   }
 
-  .fullscreen-links a::before {
+  .fullscreen-links small {
     display: none;
   }
 
@@ -1530,11 +1788,14 @@ textarea:focus-visible {
   .reservation-card {
     padding: 28px 20px;
   }
+
+  .reservation-inner {
+    padding-left: var(--side);
+    padding-right: var(--side);
+  }
 }
 
-/* -------------------------------------------------- */
-/* Reduced motion */
-/* -------------------------------------------------- */
+/* REDUCED MOTION */
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -1550,9 +1811,7 @@ textarea:focus-visible {
   }
 }
 
-/* -------------------------------------------------- */
-/* Fine pointer only */
-/* -------------------------------------------------- */
+/* POINTER */
 
 @media (pointer: fine) {
   a,

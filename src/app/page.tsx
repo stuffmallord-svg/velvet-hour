@@ -133,9 +133,7 @@ function getActivePhaseIndex(hour: number) {
   if (hour >= 12 && hour < 18) return 0;
   if (hour >= 18 && hour < 22) return 1;
   if (hour >= 22) return 2;
-  if (hour < 3) return 3;
-
-  return 0;
+  return 3;
 }
 
 export default function Home() {
@@ -226,7 +224,7 @@ export default function Home() {
 
         <div className="nav-center">
           <span>SOHO / LONDON</span>
-          <span className="nav-divider">—</span>
+          <span className="nav-divider" />
           <span suppressHydrationWarning>{clock} LDN</span>
         </div>
 
@@ -234,9 +232,11 @@ export default function Home() {
           type="button"
           className="menu-trigger"
           onClick={() => setMenuOpen(true)}
+          aria-label="Open navigation menu"
+          aria-expanded={menuOpen}
         >
           <span>MENU</span>
-          <i>
+          <i aria-hidden="true">
             <b />
             <b />
           </i>
@@ -277,7 +277,10 @@ export default function Home() {
             </p>
 
             <div className="hero-actions">
-              <button type="button" onClick={openReservation}>
+              <button
+                type="button"
+                onClick={openReservation}
+              >
                 RESERVE A TABLE <span>↗</span>
               </button>
 
@@ -359,11 +362,8 @@ export default function Home() {
               }
             >
               <span className="phase-time">{phase.time}</span>
-
               <span className="phase-title">{phase.title}</span>
-
               <span className="phase-meta">{phase.meta}</span>
-
               <span className="phase-arrow">↗</span>
             </button>
           ))}
@@ -399,11 +399,17 @@ export default function Home() {
                 {column.items.map(([name, note, price]) => (
                   <div className="menu-item" key={name}>
                     <div>
-                      <strong>{name}</strong>
-                      <span>{note}</span>
+                      <strong className="menu-item-name">
+                        {name}
+                      </strong>
+                      <span className="menu-item-note">
+                        {note}
+                      </span>
                     </div>
 
-                    <b>£{price}</b>
+                    <b className="menu-item-price">
+                      £{price}
+                    </b>
                   </div>
                 ))}
               </div>
@@ -508,7 +514,6 @@ export default function Home() {
       <section className="gallery-section section-pad">
         <div className="gallery-head">
           <span className="section-number">06 / THE ROOM</span>
-
           <p>LIGHT CHANGES. SO DOES EVERYTHING ELSE.</p>
         </div>
 
@@ -529,7 +534,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="reservation-section">
+      <section className="reservation-section section-pad">
         <div className="reservation-inner">
           <div className="reservation-copy">
             <span className="section-number">RESERVATIONS</span>
@@ -588,6 +593,7 @@ export default function Home() {
         <div className="footer-bottom">
           <span>GOOD FOOD. BAD HOURS.</span>
           <span>© 2026 VELVET HOUR</span>
+
           <button
             type="button"
             className="back-top"
@@ -666,7 +672,9 @@ export default function Home() {
 
           {!submitted ? (
             <>
-              <span className="section-number">RESERVATIONS / 2026</span>
+              <span className="section-number">
+                RESERVATIONS / 2026
+              </span>
 
               <h2>
                 BOOK
@@ -708,7 +716,11 @@ export default function Home() {
 
                   <label>
                     GUESTS
-                    <select required name="guests" defaultValue="">
+                    <select
+                      required
+                      name="guests"
+                      defaultValue=""
+                    >
                       <option value="" disabled>
                         Select
                       </option>
