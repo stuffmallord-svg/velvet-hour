@@ -1,81 +1,135 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import styles from "../admin.module.css";
 
 export default function AdminLoginPage() {
   const router = useRouter();
+  const supabase = createSupabaseBrowserClient();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
-
-  const getNextPath = () => {
-    if (typeof window === "undefined") return "/admin";
-    return new URLSearchParams(window.location.search).get("next") || "/admin";
-  };
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const supabase = createSupabaseBrowserClient();
     let active = true;
 
-    supabase.auth.getUser().then(({ data }) => {
-      if (!active) return;
-      if (data.user) router.replace(getNextPath());
-      else setLoading(false);
-    });
+    async function checkSession() {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (active && session) {
+        router.replace("/admin");
+      }
+    }
+
+    void checkSession();
 
     return () => {
       active = false;
     };
-  }, [router]);
+  }, [router, supabase]);
 
-  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSubmitting(true);
+
+    setLoading(true);
     setError("");
 
-    const supabase = createSupabaseBrowserClient();
-    const result = await supabase.auth.signInWithPassword({ email, password });
+    const { error: signInError } =
+      await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password,
+      });
 
-    if (result.error) {
-      setError("The door did not open. Check your details and try again.");
-      setSubmitting(false);
+    if (signInError) {
+      setError("ACCESS DENIED / CHECK YOUR CREDENTIALS");
+      setLoading(false);
       return;
     }
 
-    router.replace(getNextPath());
+    router.replace("/admin");
     router.refresh();
-  };
-
-  if (loading) {
-    return <main className={styles.loginPage}><p className={styles.loginBrand}>CHECKING THE DOOR / VELVET HOUR</p></main>;
   }
 
   return (
     <main className={styles.loginPage}>
-      <section className={styles.loginFrame}>
-        <span className={styles.loginBrand}>VELVET HOUR / BACKSTAGE</span>
-        <h1 className={styles.loginTitle}>Enter the<em>room.</em></h1>
-        <form className={styles.loginForm} onSubmit={submit}>
-          <div className={styles.loginField}>
-            <label htmlFor="admin-email">Email</label>
-            <input id="admin-email" type="email" autoComplete="email" required value={email} onChange={(event) => setEmail(event.target.value)} />
+      <div className={styles.loginNoise} />
+
+      <div className={styles.loginTop}>
+        <span>VH</span>
+        <span>PRIVATE HOUSE / LONDON</span>
+        <span>001</span>
+      </div>
+
+      <section className={styles.loginShell}>
+        <div className={styles.loginIntro}>
+          <span className={styles.loginEyebrow}>
+            VELVET HOUR / BACKSTAGE SYSTEM
+          </span>
+
+          <h1>
+            THE
+            <br />
+            HOUSE<span>.</span>
+          </h1>
+
+          <p>
+            Internal access for reservations, guest management and night
+            operations.
+          </p>
+        </div>
+
+        <form className={styles.loginForm} onSubmit={handleSubmit}>
+          <div className={styles.loginFormHeader}>
+            <span>01</span>
+            <strong>IDENTIFY</strong>
           </div>
-          <div className={styles.loginField}>
-            <label htmlFor="admin-password">Password</label>
-            <input id="admin-password" type="password" autoComplete="current-password" required value={password} onChange={(event) => setPassword(event.target.value)} />
-          </div>
-          {error && <p className={styles.loginError} role="alert">{error}</p>}
-          <button className={styles.loginSubmit} type="submit" disabled={submitting}>
-            {submitting ? "OPENING THE ROOM" : "ENTER BACKSTAGE"}
+
+          <label>
+            <span>EMAIL ADDRESS</span>
+            <input
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
+            />
+          </label>
+
+          <label>
+            <span>PASSWORD</span>
+            <input
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </label>
+
+          {error && <div className={styles.loginError}>{error}</div>}
+
+          <button type="submit" disabled={loading}>
+            {loading ? "AUTHENTICATING..." : "ENTER THE HOUSE ↗"}
           </button>
+
+          <div className={styles.loginFormFooter}>
+            <span>AUTHORIZED PERSONNEL ONLY</span>
+            <span>SECURE CHANNEL</span>
+          </div>
         </form>
-        <p className={styles.loginNote}>Private access / London / After hours</p>
       </section>
+
+      <footer className={styles.loginFooter}>
+        <span>VELVET HOUR</span>
+        <span>EST. 00:17</span>
+        <span>ALL NIGHT / EVERY NIGHT</span>
+      </footer>
     </main>
   );
 }

@@ -171,13 +171,17 @@ export default function Home() {
     const params = new URLSearchParams(window.location.search);
 
     if (params.get("reserve") === "1") {
-      setReservationOpen(true);
+      const timer = window.setTimeout(() => {
+        setReservationOpen(true);
+      }, 0);
 
       window.history.replaceState(
         {},
         "",
         window.location.pathname,
       );
+
+      return () => window.clearTimeout(timer);
     }
   }, []);
 
