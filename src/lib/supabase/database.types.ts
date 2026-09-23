@@ -79,6 +79,46 @@ export type Database = {
           },
         ];
       };
+      admin_users: {
+        Row: {
+          user_id: string;
+          created_at: string;
+        };
+        Insert: {
+          user_id: string;
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["admin_users"]["Insert"]>;
+        Relationships: [];
+      };
+      reservation_status_audit: {
+        Row: {
+          id: string;
+          reservation_id: string;
+          admin_user_id: string;
+          old_status: "pending" | "confirmed" | "cancelled";
+          new_status: "pending" | "confirmed" | "cancelled";
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          reservation_id: string;
+          admin_user_id: string;
+          old_status: "pending" | "confirmed" | "cancelled";
+          new_status: "pending" | "confirmed" | "cancelled";
+          created_at?: string;
+        };
+        Update: Partial<Database["public"]["Tables"]["reservation_status_audit"]["Insert"]>;
+        Relationships: [
+          {
+            foreignKeyName: "reservation_status_audit_reservation_id_fkey";
+            columns: ["reservation_id"];
+            isOneToOne: false;
+            referencedRelation: "reservations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: {
@@ -99,6 +139,22 @@ export type Database = {
           reservation_date: string;
           reservation_time: string;
           duplicate: boolean;
+        }[];
+      };
+      admin_update_reservation_status: {
+        Args: {
+          p_reservation_id: string;
+          p_admin_user_id: string;
+          p_new_status: string;
+        };
+        Returns: {
+          id: string;
+          status: "pending" | "confirmed" | "cancelled";
+          reservation_date: string;
+          reservation_time: string;
+          old_status: "pending" | "confirmed" | "cancelled";
+          new_status: "pending" | "confirmed" | "cancelled";
+          updated_at: string;
         }[];
       };
     };
