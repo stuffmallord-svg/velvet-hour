@@ -292,6 +292,11 @@ export default function Home() {
             <span className="hero-index">00 / 06</span>
           </div>
         </div>
+
+        <div className="hero-scroll" aria-hidden="true">
+          <span>SCROLL TO ENTER</span>
+          <i />
+        </div>
       </section>
 
       <section className="intro section-pad">
@@ -332,6 +337,7 @@ export default function Home() {
         <div className="states-head">
           <div>
             <span className="section-number">02 / THE HOURS</span>
+
             <h2>
               ONE ROOM.
               <br />
@@ -347,26 +353,41 @@ export default function Home() {
         </div>
 
         <div className="phase-list">
-          {phases.map((phase, index) => (
-            <button
-              type="button"
-              className={`phase-row ${
-                activePhase === index ? "is-active" : ""
-              }`}
-              key={phase.time}
-              onClick={() => setActivePhase(index)}
-              style={
-                {
-                  "--phase-color": phase.color,
-                } as CSSProperties
-              }
-            >
-              <span className="phase-time">{phase.time}</span>
-              <span className="phase-title">{phase.title}</span>
-              <span className="phase-meta">{phase.meta}</span>
-              <span className="phase-arrow">↗</span>
-            </button>
-          ))}
+          {phases.map((phase, index) => {
+            const isLive = activePhase === index;
+
+            return (
+              <button
+                type="button"
+                className={`phase-row ${
+                  isLive ? "is-active" : ""
+                }`}
+                key={phase.time}
+                onClick={() => setActivePhase(index)}
+                style={
+                  {
+                    "--phase-color": phase.color,
+                  } as CSSProperties
+                }
+                aria-pressed={isLive}
+              >
+                <span className="phase-time">
+                  {phase.time}
+                </span>
+
+                <span className="phase-title">
+                  {phase.title}
+                </span>
+
+                <span className="phase-meta">
+                  {isLive ? "LIVE NOW / " : ""}
+                  {phase.meta}
+                </span>
+
+                <span className="phase-arrow">↗</span>
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -402,6 +423,7 @@ export default function Home() {
                       <strong className="menu-item-name">
                         {name}
                       </strong>
+
                       <span className="menu-item-note">
                         {note}
                       </span>
@@ -453,7 +475,9 @@ export default function Home() {
           </div>
 
           <div className="nights-content">
-            <span className="section-number">NEXT / 001</span>
+            <span className="section-number">
+              NEXT / 001
+            </span>
 
             <h3>VELVET HOUR</h3>
 
