@@ -1,220 +1,317 @@
 # VELVET HOUR
 
-### Late-night dining. Music. Atmosphere.
+### A late-night dining room, bar & music space.
 
-VELVET HOUR is a fictional London nightlife concept built as a full digital experience rather than a traditional restaurant website.
+**Velvet Hour** is a concept restaurant website built as a full-stack digital experience for a fictional late-night venue in Soho, London.
 
-The concept combines a late-night dining room, cocktail bar and music venue into one space that changes character throughout the night.
+The project combines an editorial visual identity with a functional reservation system, availability checking, admin dashboard and automated guest confirmation emails.
 
-**12:00 — LUNCH**  
-**18:00 — DINNER**  
-**22:00 — VELVET**  
-**00:00 — AFTER DARK**  
-**03:00 — LAST CALL**
+**Concept / Design / Development:** MALLORD / DIGITAL STUDIO
+**Year:** 2026
+**Location:** Soho / London
 
 ---
 
-## Live
+## LIVE
 
-**Website:**  
-https://velvet-hour-five.vercel.app
-
-**Repository:**  
-https://github.com/stuffmallord-svg/velvet-hour
+**Website:** https://velvet-hour-five.vercel.app
 
 ---
 
-## About
+## THE CONCEPT
 
-VELVET HOUR was designed around a simple idea:
+Velvet Hour is designed around the idea of a venue that changes throughout the night.
 
-> The night should feel different depending on what time you arrive.
+The experience moves through five different states:
 
-Instead of treating the website as a collection of restaurant pages, the experience is structured around the progression of a night.
+* **12 DAY** — Lunch / Coffee / Slow Hours
+* **18 DINNER** — Food / Wine / First Drink
+* **22 VELVET** — Bar / Music / Social
+* **00 AFTER DARK** — DJs / Live / Dancefloor
+* **03 LAST CALL** — Late Nights / One More
 
-The visual language combines editorial typography, dark photography, red atmospheric accents and oversized type with a restrained information architecture.
-
-The result is intentionally closer to a fashion, hospitality or nightlife brand than a conventional restaurant template.
-
----
-
-## Experience
-
-### ONE ROOM. FIVE STATES.
-
-The homepage introduces five different states of the venue:
-
-| Time | State | Atmosphere |
-| --- | --- | --- |
-| 12:00 | Lunch | Slow hours |
-| 18:00 | Dinner | Food & wine |
-| 22:00 | Velvet | Bar & music |
-| 00:00 | After Dark | DJs & dancefloor |
-| 03:00 | Last Call | Late nights |
-
-The active state is determined by London time.
-
-This creates a small but important connection between the digital experience and the fictional physical venue.
+The website follows the same idea through typography, motion, imagery, navigation and changing visual hierarchy.
 
 ---
 
-## Pages
+## FEATURES
 
-### `/`
+### Guest Experience
 
-The main experience.
+* Editorial landing page
+* Responsive mobile experience
+* Interactive fullscreen navigation
+* Restaurant menu
+* Upcoming nights & events
+* Private dining page
+* Gift cards
+* The Velvet List
+* Reservation flow
+* Reservation confirmation state
+* Dynamic London time
+* Smooth transitions and micro-interactions
 
-Includes:
+### Reservation System
 
-- Full-screen hero
-- London time
-- Dynamic venue state
-- Brand introduction
-- Five-state timeline
-- Menu preview
-- Upcoming nights
-- Manifesto section
-- Editorial image gallery
-- Reservation CTA
-- Full-screen navigation
-- Reservation modal
+Guests can:
 
----
+* Select a date
+* Select a time
+* Choose party size
+* Add contact information
+* Add an occasion
+* Submit a reservation
 
-### `/menu`
+The reservation is processed through the backend and stored in Supabase.
 
-A dedicated editorial menu experience.
+### Admin Dashboard
 
-Includes:
+The project includes a dedicated admin interface for managing reservations.
 
-- Raw
-- Fire
-- Pasta
-- Sweet
-- Late
-- Drinks
+Administrators can:
 
-Each section is designed as part of the same visual system instead of feeling like a separate template page.
+* View incoming reservations
+* Review guest information
+* See reservation date and time
+* Confirm reservations
+* Cancel reservations
+* Manage reservation status
 
----
+### Email Confirmation
 
-### `/nights`
+When a reservation is confirmed, the system can automatically send a confirmation email to the guest through Resend.
 
-The events section.
+The email includes:
 
-Designed around nightlife rather than a generic events listing.
-
-Includes:
-
-- Featured night
-- Event schedule
-- Event details
-- Visual storytelling
-- Reservation CTA
-
----
-
-## Design Direction
-
-VELVET HOUR intentionally avoids the usual luxury restaurant visual language.
-
-No marble.
-
-No gold.
-
-No oversized wine bottles.
-
-No generic five-star restaurant aesthetic.
-
-Instead, the direction is based on:
-
-- Editorial typography
-- High-contrast serif headlines
-- Monospace interface typography
-- Dark photography
-- Deep red accents
-- Large negative space
-- Asymmetrical layouts
-- Nightclub-inspired interaction
-- Fashion/editorial art direction
-
-The interface is designed to feel quiet during the day and increasingly atmospheric as the night progresses.
+* Guest name
+* Reservation date
+* Reservation time
+* Number of guests
+* Occasion
 
 ---
 
-## Interaction
-
-The website includes several small interactions designed to make the experience feel more physical:
-
-- London-based live clock
-- Dynamic night-state logic
-- Full-screen navigation
-- Reservation modal
-- Image hover transitions
-- Editorial menu interactions
-- Smooth section transitions
-- Responsive layouts
-- Reduced-motion support
-- Keyboard focus states
-
-The goal is not to overload the interface with animation.
-
-Every interaction exists to reinforce the atmosphere of the brand.
-
----
-
-## Tech Stack
+## TECH STACK
 
 ### Frontend
 
-- Next.js 16
-- React
-- TypeScript
-- App Router
-- CSS
-- CSS Modules
+* Next.js
+* React
+* TypeScript
+* CSS
+* Next Image
+* Responsive design
 
-### Typography
+### Backend
 
-- Bodoni Moda
-- Inter
-- DM Mono
+* Next.js API Routes
+* Supabase
+* PostgreSQL
+* Server-side validation
+* Reservation availability logic
+
+### Email
+
+* Resend
 
 ### Deployment
 
-- Vercel
+* Vercel
+* GitHub
 
 ---
 
-## Project Structure
+## ARCHITECTURE
+
+```text
+Guest
+  │
+  ▼
+Next.js Frontend
+  │
+  ▼
+Reservation API
+  │
+  ▼
+Supabase
+  │
+  ├── Reservations
+  ├── Availability
+  └── Reservation Status
+          │
+          ▼
+     Admin Dashboard
+          │
+          ▼
+   Confirm Reservation
+          │
+          ▼
+        Resend
+          │
+          ▼
+     Guest Confirmation
+```
+
+---
+
+## ROUTES
+
+### Public
+
+```text
+/
+ /menu
+ /nights
+ /private-dining
+ /reservations
+ /gift-cards
+ /the-velvet-list
+```
+
+### Admin
+
+```text
+/admin
+/admin/login
+```
+
+### API
+
+```text
+/api/reservations
+/api/availability
+/api/admin/reservations
+/api/admin/reservations/[id]
+```
+
+---
+
+## PROJECT STRUCTURE
 
 ```text
 velvet-hour/
-├── public/
-│   └── images/
-│       └── velvet/
-│           ├── hero.jpg
-│           ├── velvet.jpg
-│           ├── after-dark.jpg
-│           ├── noir.jpg
-│           ├── gallery-01.jpg
-│           └── gallery-02.jpg
-│
 ├── src/
 │   └── app/
+│       ├── admin/
+│       ├── gift-cards/
 │       ├── menu/
-│       │   ├── page.tsx
-│       │   └── menu.module.css
-│       │
 │       ├── nights/
-│       │   ├── page.tsx
-│       │   └── nights.module.css
-│       │
+│       ├── private-dining/
+│       ├── reservations/
+│       ├── the-velvet-list/
+│       ├── api/
+│       │   ├── admin/
+│       │   ├── availability/
+│       │   └── reservations/
 │       ├── globals.css
 │       ├── layout.tsx
 │       └── page.tsx
-│
+├── public/
+│   └── images/
 ├── package.json
-├── tsconfig.json
-├── next.config.ts
 └── README.md
+```
+
+---
+
+## DESIGN DIRECTION
+
+The visual language is intentionally minimal, dark and editorial.
+
+The interface uses:
+
+* Oversized typography
+* Monospaced metadata
+* High-contrast imagery
+* Deep black backgrounds
+* Subtle red accents
+* Large editorial spacing
+* Fullscreen navigation
+* Motion-driven interactions
+* Mobile-first responsive adjustments
+
+The goal was to make the website feel closer to a digital fashion/editorial experience than a conventional restaurant website.
+
+---
+
+## RESPONSIVE EXPERIENCE
+
+The website was designed for both desktop and mobile.
+
+Mobile layouts were specifically adapted for:
+
+* Hero composition
+* Large typography
+* Menu item hierarchy
+* Event cards
+* Gallery layouts
+* Reservation forms
+* Fullscreen navigation
+* Modal interactions
+* Footer structure
+
+---
+
+## DEVELOPMENT
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create your environment file:
+
+```bash
+.env.local
+```
+
+Add the required environment variables for Supabase and Resend.
+
+Run the development server:
+
+```bash
+npm run dev
+```
+
+Open:
+
+```text
+http://localhost:3000
+```
+
+---
+
+## BUILD
+
+Production build:
+
+```bash
+npm run build
+```
+
+Lint:
+
+```bash
+npm run lint
+```
+
+---
+
+## STATUS
+
+**Completed — 2026**
+
+Velvet Hour is a concept project created by **MALLORD / DIGITAL STUDIO** to demonstrate a complete restaurant web experience, including visual design, responsive frontend development, backend functionality and reservation management.
+
+---
+
+## CREDITS
+
+**MALLORD / DIGITAL STUDIO**
+
+Digital experiences, creative development & web design.
+
+**VELVET HOUR**
+Concept restaurant / London
+2026
