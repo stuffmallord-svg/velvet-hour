@@ -620,7 +620,8 @@ export default function Home() {
 
             <div>
               <span className="footer-label">PROJECT</span>
-              <span>CONCEPT PROJECT</span>
+              <span>MALLORD / DIGITAL STUDIO</span>
+              <span>VELVET HOUR / CONCEPT PROJECT</span>
               <span>2026</span>
             </div>
           </div>
