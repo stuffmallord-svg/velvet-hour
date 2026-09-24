@@ -273,6 +273,10 @@ export default function Home() {
             <em>HOUR</em>
           </h1>
 
+          <div className="hero-live-time">
+            LONDON / {clock} / NIGHT STARTS AGAIN
+          </div>
+
           <div className="hero-bottom">
             <p>
               A late-night dining room,
